@@ -5,10 +5,10 @@ import java.util.Arrays;
  */
 public class ArrayStorage {
     private Resume[] storage = new Resume[10000];
-    private int size = 0;
+    private int size;
 
     void clear() {
-        Arrays.fill(storage, null);
+        Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
@@ -30,18 +30,14 @@ public class ArrayStorage {
     }
 
     void delete(String uuid) {
-        int indexToDelete = -1;
-
-        for (int i = 0; i < this.size; i++) {
+        for (int i = 0; i < size; i++) {
             if (storage[i].uuid.equals(uuid)) {
-                indexToDelete = i;
+                if (i < size - 1) {
+                    System.arraycopy(storage, i + 1, storage, i, size - i - 1);
+                }
+                storage[--size] = null;
                 break;
             }
-        }
-
-        if (indexToDelete != -1) {
-            System.arraycopy(storage, indexToDelete + 1, storage, indexToDelete, size - indexToDelete - 1);
-            storage[--size] = null;
         }
     }
 
@@ -53,6 +49,6 @@ public class ArrayStorage {
     }
 
     int size() {
-        return this.size;
+        return size;
     }
 }
