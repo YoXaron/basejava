@@ -2,12 +2,13 @@ package com.yoxaron.webapp;
 
 import com.yoxaron.webapp.model.Resume;
 import com.yoxaron.webapp.storage.ArrayStorage;
+import com.yoxaron.webapp.storage.Storage;
 
 /**
  * Test for your com.yoxaron.webapp.storage.ArrayStorage implementation
  */
 public class MainTestArrayStorage {
-    static final ArrayStorage ARRAY_STORAGE = new ArrayStorage();
+    private static final Storage ARRAY_STORAGE = new ArrayStorage();
 
     public static void main(String[] args) {
         Resume r1 = new Resume();
