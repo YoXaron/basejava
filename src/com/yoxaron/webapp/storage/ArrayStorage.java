@@ -55,11 +55,10 @@ public class ArrayStorage {
 
         if (!isExist(index)) {
             System.out.printf("DELETE ERROR: No such resume in the storage. UUID=%s.\n", uuid);
-            return;
+        } else {
+            storage[index] = storage[size - 1];
+            storage[--size] = null;
         }
-
-        storage[index] = storage[size - 1];
-        storage[--size] = null;
     }
 
     public void clear() {
