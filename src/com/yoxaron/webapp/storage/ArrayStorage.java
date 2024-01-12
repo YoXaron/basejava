@@ -9,7 +9,7 @@ import java.util.Arrays;
  */
 public class ArrayStorage {
     private static final int STORAGE_CAPACITY = 10000;
-    private Resume[] storage = new Resume[STORAGE_CAPACITY];
+    private final Resume[] storage = new Resume[STORAGE_CAPACITY];
     private int size;
 
     /**
@@ -21,44 +21,44 @@ public class ArrayStorage {
 
     public Resume get(String uuid) {
         int index = getIndex(uuid);
-        return (index != -1) ? storage[index] : null;
+
+        if (isExist(index)) {
+            return storage[index];
+        } else {
+            System.out.printf("GET ERROR: Resume with UUID=%s not found in the storage.\n", uuid);
+            return null;
+        }
     }
 
     public void save(Resume r) {
         if (size == STORAGE_CAPACITY) {
-            System.out.println("SAVE ERROR: Storage is full\n");
-            return;
-        }
-
-        if (isResumePresent(r)) {
-            System.out.printf("SAVE ERROR: This UUID=%s already exists\n", r.getUuid());
+            System.out.println("SAVE ERROR: Storage is full.\n");
+        } else if (isExist(getIndex(r.getUuid()))) {
+            System.out.printf("SAVE ERROR: This UUID=%s already exists.\n", r.getUuid());
         } else {
             storage[size++] = r;
         }
     }
 
     public void update(Resume r) {
-        int indexToUpdate = getIndex(r.getUuid());
+        int index = getIndex(r.getUuid());
 
-        if (indexToUpdate != -1) {
-            storage[indexToUpdate] = r;
+        if (isExist(index)) {
+            storage[index] = r;
         } else {
-            System.out.printf("UPDATE ERROR: No such resume in the storage. UUID=%s\n", r.getUuid());
+            System.out.printf("UPDATE ERROR: No such resume in the storage. UUID=%s.\n", r.getUuid());
         }
     }
 
     public void delete(String uuid) {
-        int indexToDelete = getIndex(uuid);
+        int index = getIndex(uuid);
 
-        if (indexToDelete == -1) {
-            System.out.printf("DELETE ERROR: No such resume in the storage. UUID=%s\n", uuid);
+        if (!isExist(index)) {
+            System.out.printf("DELETE ERROR: No such resume in the storage. UUID=%s.\n", uuid);
             return;
         }
 
-        if (indexToDelete < size - 1) {
-            System.arraycopy(storage, indexToDelete + 1, storage, indexToDelete, size - indexToDelete - 1);
-        }
-
+        storage[index] = storage[size - 1];
         storage[--size] = null;
     }
 
@@ -71,8 +71,8 @@ public class ArrayStorage {
         return size;
     }
 
-    public boolean isResumePresent(Resume r) {
-        return get(r.getUuid()) != null;
+    private boolean isExist(int index) {
+        return index != -1;
     }
 
     public int getIndex(String uuid) {
@@ -81,7 +81,6 @@ public class ArrayStorage {
                 return i;
             }
         }
-
         return -1;
     }
 }
