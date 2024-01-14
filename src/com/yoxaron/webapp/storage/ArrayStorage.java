@@ -7,11 +7,7 @@ import java.util.Arrays;
 /**
  * Array based storage for Resumes
  */
-public class ArrayStorage implements Storage {
-    private static final int STORAGE_CAPACITY = 10000;
-    private final Resume[] storage = new Resume[STORAGE_CAPACITY];
-    private int size;
-
+public class ArrayStorage extends AbstractArrayStorage {
     /**
      * @return array, contains only Resumes in storage (without null)
      */
@@ -64,10 +60,6 @@ public class ArrayStorage implements Storage {
     public void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
-    }
-
-    public int size() {
-        return size;
     }
 
     private boolean isExist(int index) {
