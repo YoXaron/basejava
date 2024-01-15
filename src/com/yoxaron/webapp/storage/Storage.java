@@ -3,6 +3,7 @@ package com.yoxaron.webapp.storage;
 import com.yoxaron.webapp.model.Resume;
 
 public interface Storage {
+
     Resume[] getAll();
 
     Resume get(String uuid);
