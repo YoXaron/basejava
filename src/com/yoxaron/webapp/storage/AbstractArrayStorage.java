@@ -26,7 +26,7 @@ public abstract class AbstractArrayStorage implements Storage {
         return Arrays.copyOf(storage, size);
     }
 
-    public Resume get(String uuid) {
+    public final Resume get(String uuid) {
         int index = getIndex(uuid);
 
         if (isExist(index)) {
@@ -37,17 +37,18 @@ public abstract class AbstractArrayStorage implements Storage {
         }
     }
 
-    public void save(Resume r) {
+    public final void save(Resume r) {
         if (size == STORAGE_CAPACITY) {
             System.out.println("SAVE ERROR: Storage is full.\n");
         } else if (isExist(getIndex(r.getUuid()))) {
             System.out.printf("SAVE ERROR: This UUID=%s already exists.\n", r.getUuid());
         } else {
             saveToStorage(r);
+            size++;
         }
     }
 
-    public void update(Resume r) {
+    public final void update(Resume r) {
         int index = getIndex(r.getUuid());
 
         if (isExist(index)) {
@@ -57,11 +58,12 @@ public abstract class AbstractArrayStorage implements Storage {
         }
     }
 
-    public void delete(String uuid) {
+    public final void delete(String uuid) {
         int index = getIndex(uuid);
 
         if (isExist(index)) {
             deleteFromStorage(index);
+            storage[--size] = null;
         } else {
             System.out.printf("DELETE ERROR: No such resume in the storage. UUID=%s.\n", uuid);
         }
