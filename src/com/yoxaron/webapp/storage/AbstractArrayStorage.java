@@ -1,5 +1,8 @@
 package com.yoxaron.webapp.storage;
 
+import com.yoxaron.webapp.exception.ExistStorageException;
+import com.yoxaron.webapp.exception.NotExistStorageException;
+import com.yoxaron.webapp.exception.StorageException;
 import com.yoxaron.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -32,16 +35,15 @@ public abstract class AbstractArrayStorage implements Storage {
         if (isExist(index)) {
             return storage[index];
         } else {
-            System.out.printf("GET ERROR: Resume with UUID=%s not found in the storage.\n", uuid);
-            return null;
+            throw new NotExistStorageException(uuid);
         }
     }
 
     public final void save(Resume r) {
         if (size == STORAGE_CAPACITY) {
-            System.out.println("SAVE ERROR: Storage is full.\n");
+            throw new StorageException("Storage is full", r.getUuid());
         } else if (isExist(getIndex(r.getUuid()))) {
-            System.out.printf("SAVE ERROR: This UUID=%s already exists.\n", r.getUuid());
+            throw new ExistStorageException(r.getUuid());
         } else {
             saveToStorage(r);
             size++;
@@ -54,7 +56,7 @@ public abstract class AbstractArrayStorage implements Storage {
         if (isExist(index)) {
             storage[index] = r;
         } else {
-            System.out.printf("UPDATE ERROR: No such resume in the storage. UUID=%s.\n", r.getUuid());
+            throw new NotExistStorageException(r.getUuid());
         }
     }
 
@@ -65,7 +67,7 @@ public abstract class AbstractArrayStorage implements Storage {
             deleteFromStorage(index);
             storage[--size] = null;
         } else {
-            System.out.printf("DELETE ERROR: No such resume in the storage. UUID=%s.\n", uuid);
+            throw new NotExistStorageException(uuid);
         }
     }
 
