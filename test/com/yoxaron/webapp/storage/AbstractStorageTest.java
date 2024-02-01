@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 public abstract class AbstractStorageTest {
 
     private final Storage storage;
@@ -40,8 +42,12 @@ public abstract class AbstractStorageTest {
         Resume r1 = new Resume(UUID_1);
         Resume r2 = new Resume(UUID_2);
         Resume r3 = new Resume(UUID_3);
+        Resume[] expected = new Resume[] {r1, r2, r3};
 
-        Assertions.assertArrayEquals(new Resume[]{r1, r2, r3}, storage.getAll());
+        Resume[] actual = storage.getAll();
+        Arrays.sort(actual);
+
+        Assertions.assertArrayEquals(expected, actual);
     }
 
     @Test
