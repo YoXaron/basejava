@@ -18,7 +18,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     protected abstract void deleteFromStorage(int index);
 
-    protected abstract Object getIndex(String uuid);
+    protected abstract Object getSearchKey(String uuid);
 
     /**
      * @return array, contains only Resumes in storage (without null)
