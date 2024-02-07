@@ -12,8 +12,6 @@ import java.util.Arrays;
 
 public abstract class AbstractStorageTest {
 
-    private final Storage storage;
-
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
@@ -24,6 +22,8 @@ public abstract class AbstractStorageTest {
     private static final Resume RESUME_2 = new Resume(UUID_2);
     private static final Resume RESUME_3 = new Resume(UUID_3);
     private static final Resume RESUME_4 = new Resume(UUID_4);
+
+    private final Storage storage;
 
     public AbstractStorageTest(Storage storage) {
         this.storage = storage;

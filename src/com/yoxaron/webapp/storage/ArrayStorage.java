@@ -8,16 +8,6 @@ import com.yoxaron.webapp.model.Resume;
 public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
-    protected void saveToStorage(Resume r) {
-        storage[size] = r;
-    }
-
-    @Override
-    protected void deleteFromStorage(int index) {
-        storage[index] = storage[size - 1];
-    }
-
-    @Override
     public Object getSearchKey(String uuid) {
         for (int i = 0; i < size; i++) {
             if (uuid.equals(storage[i].getUuid())) {
@@ -25,5 +15,15 @@ public class ArrayStorage extends AbstractArrayStorage {
             }
         }
         return -1;
+    }
+
+    @Override
+    protected void saveToArrayStorage(Resume r, int index) {
+        storage[size] = r;
+    }
+
+    @Override
+    protected void deleteFromArrayStorage(int index) {
+        storage[index] = storage[size - 1];
     }
 }
