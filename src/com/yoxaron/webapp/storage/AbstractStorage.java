@@ -4,9 +4,14 @@ import com.yoxaron.webapp.exception.ExistStorageException;
 import com.yoxaron.webapp.exception.NotExistStorageException;
 import com.yoxaron.webapp.model.Resume;
 
+import java.util.Collections;
+import java.util.List;
+
 public abstract class AbstractStorage implements Storage {
 
     protected abstract Object getSearchKey(String uuid);
+
+    protected abstract List<Resume> doGetAll();
 
     protected abstract Resume doGet(Object searchKey);
 
@@ -17,6 +22,12 @@ public abstract class AbstractStorage implements Storage {
     protected abstract void doDelete(Object searchKey);
 
     protected abstract boolean isExist(Object searchKey);
+
+    public final List<Resume> getAllSorted() {
+        List<Resume> list = doGetAll();
+        Collections.sort(list);
+        return list;
+    }
 
     public final Resume get(String uuid) {
         Object searchKey = getExistingSearchKey(uuid);

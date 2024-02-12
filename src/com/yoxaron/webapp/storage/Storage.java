@@ -2,9 +2,11 @@ package com.yoxaron.webapp.storage;
 
 import com.yoxaron.webapp.model.Resume;
 
+import java.util.List;
+
 public interface Storage {
 
-    Resume[] getAll();
+    List<Resume> getAllSorted();
 
     Resume get(String uuid);
 
