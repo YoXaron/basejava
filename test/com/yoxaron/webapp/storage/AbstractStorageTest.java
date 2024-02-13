@@ -2,7 +2,6 @@ package com.yoxaron.webapp.storage;
 
 import com.yoxaron.webapp.exception.ExistStorageException;
 import com.yoxaron.webapp.exception.NotExistStorageException;
-import com.yoxaron.webapp.exception.StorageException;
 import com.yoxaron.webapp.model.Resume;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +22,7 @@ public abstract class AbstractStorageTest {
     private static final Resume RESUME_3 = new Resume(UUID_3, "FullName3");
     private static final Resume RESUME_4 = new Resume(UUID_4, "FullName4");
 
-    private final Storage storage;
+    protected final Storage storage;
 
     public AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -66,21 +65,6 @@ public abstract class AbstractStorageTest {
     @Test
     public void saveAlreadyExist() {
         Assertions.assertThrows(ExistStorageException.class, () -> storage.save(RESUME_1));
-    }
-
-    @Test
-    public void saveOverflow() {
-        storage.clear();
-
-        try {
-            for (int i = 0; i < AbstractArrayStorage.STORAGE_CAPACITY; i++) {
-                storage.save(new Resume("dummy"));
-            }
-        } catch (Exception e) {
-            Assertions.fail("Overflow ahead of time");
-        }
-
-        Assertions.assertThrows(StorageException.class, () -> storage.save(new Resume("dummy")));
     }
 
     @Test
