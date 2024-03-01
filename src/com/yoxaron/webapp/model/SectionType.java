@@ -3,7 +3,7 @@ package com.yoxaron.webapp.model;
 public enum SectionType {
     PERSONAL("Личные качества"),
     OBJECTIVE("Позиция"),
-    ACHIEVEMENT("Достижения"),
+    ACHIEVEMENTS("Достижения"),
     QUALIFICATIONS("Квалификация"),
     EXPERIENCE("Опыт"),
     EDUCATION("Образование");
@@ -12,5 +12,9 @@ public enum SectionType {
 
     SectionType(String title) {
         this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
     }
 }
