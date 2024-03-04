@@ -9,22 +9,65 @@ import java.util.List;
 import java.util.Map;
 
 public class ResumeTestData {
-    public static void main(String[] args) {
-        Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
-        contacts.put(ContactType.PHONE_NUMBER, "+7(921) 855-0482");
-        contacts.put(ContactType.SKYPE, "skype:grigory.kislin");
-        contacts.put(ContactType.EMAIL, "gkislin@yandex.ru");
-        contacts.put(ContactType.GITHUB, "https://github.com/gkislin");
-        contacts.put(ContactType.LINKEDIN, "https://linkedin.com/in/gkislin");
-        contacts.put(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473/grigory-kislin");
-        contacts.put(ContactType.HOME_PAGE, "http://gkislin.ru/");
 
+    public static void main(String[] args) {
+        Resume r = createFilledResume("1", "Григорий Кислин");
+        printResume(r);
+    }
+
+    public static Resume createFilledResume(String uuid, String fullName) {
+        Map<ContactType, String> contacts = getContacts();
+        Map<SectionType, Section> sections = getSections();
+        return new Resume(uuid, fullName, contacts, sections);
+    }
+
+    public static void printResume(Resume resume) {
+        System.out.println(resume.getFullName());
+
+        ContactType[] contactTypes = ContactType.values();
+        for (ContactType contactType : contactTypes) {
+            System.out.print(contactType.getTitle() + ": ");
+            String contact = resume.getContacts().get(contactType);
+            System.out.println(contact);
+        }
+
+        SectionType[] sectionTypes = SectionType.values();
+        for (SectionType sectionType : sectionTypes) {
+            System.out.println(sectionType.getTitle());
+            Section section = resume.getSections().get(sectionType);
+            System.out.println(section);
+        }
+    }
+
+    private static Map<ContactType, String> getContacts() {
+        Map<ContactType, String> map = new EnumMap<>(ContactType.class);
+        map.put(ContactType.PHONE_NUMBER, "+7(921) 855-0482");
+        map.put(ContactType.SKYPE, "skype:grigory.kislin");
+        map.put(ContactType.EMAIL, "gkislin@yandex.ru");
+        map.put(ContactType.GITHUB, "https://github.com/gkislin");
+        map.put(ContactType.LINKEDIN, "https://linkedin.com/in/gkislin");
+        map.put(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473/grigory-kislin");
+        map.put(ContactType.HOME_PAGE, "http://gkislin.ru/");
+        return map;
+    }
+
+    private static Map<SectionType, Section> getSections() {
         Map<SectionType, Section> sections = new EnumMap<>(SectionType.class);
+        fillTextSections(sections);
+        fillAchievements(sections);
+        fillQualifications(sections);
+        fillOrganizations(sections);
+        return sections;
+    }
+
+    private static void fillTextSections(Map<SectionType, Section> sections) {
         sections.put(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, креативность, " +
                 "инициативность. Пурист кода и архитектуры."));
         sections.put(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного обучения " +
                 "по Java Web и Enterprise технологиям"));
+    }
 
+    private static void fillAchievements(Map<SectionType, Section> sections) {
         List<String> achievements = new ArrayList<>();
         achievements.add("Организация команды и успешная реализация Java проектов для сторонних заказчиков: " +
                 "приложения автопарк на стеке Spring Cloud/микросервисы, система мониторинга показателей " +
@@ -50,7 +93,9 @@ public class ResumeTestData {
                 "(Cyberplat, Eport, Chronopay, Сбербанк), Белоруcсии(Erip, Osmp) и Никарагуа.");
 
         sections.put(SectionType.ACHIEVEMENTS, new ListSection(achievements));
+    }
 
+    private static void fillQualifications(Map<SectionType, Section> sections) {
         List<String> qualifications = new ArrayList<>();
         qualifications.add("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
         qualifications.add("Version control: Subversion, Git, Mercury, ClearCase, Perforce");
@@ -76,9 +121,18 @@ public class ResumeTestData {
         qualifications.add("Родной русский, английский \"upper intermediate\"");
 
         sections.put(SectionType.QUALIFICATIONS, new ListSection(qualifications));
+    }
 
+    private static void fillOrganizations(Map<SectionType, Section> sections) {
+        List<Organization> experience = getExperienceList();
+        sections.put(SectionType.EXPERIENCE, new OrganizationSection(experience));
+
+        List<Organization> education = getEducationsList();
+        sections.put(SectionType.EDUCATION, new OrganizationSection(education));
+    }
+
+    private static List<Organization> getExperienceList() {
         List<Organization> organizations = new ArrayList<>();
-
         organizations.add(new Organization("Java Online Projects", "http://javaops.ru/",
                 List.of(new Period(
                         LocalDate.of(2013, 10, 1),
@@ -120,11 +174,11 @@ public class ResumeTestData {
                                 "Реализация RIA-приложения для администрирования, мониторинга и анализа результатов " +
                                 "в области алгоритмического трейдинга. JPA, Spring, Spring-MVC, GWT, ExtGWT (GXT), " +
                                 "Highstock, Commet, HTML5."))));
+        return organizations;
+    }
 
-        sections.put(SectionType.EXPERIENCE, new OrganizationSection(organizations));
-
+    private static List<Organization> getEducationsList() {
         List<Organization> educations = new ArrayList<>();
-
         educations.add(new Organization("Coursera",
                 "https://www.coursera.org/learn/scala-functional-programming",
                 List.of(
@@ -168,25 +222,6 @@ public class ResumeTestData {
                         )
                 )
         ));
-
-        sections.put(SectionType.EDUCATION, new OrganizationSection(educations));
-
-        Resume resume = new Resume("1", "Григорий Кислин", contacts, sections);
-
-        System.out.println(resume.getFullName());
-
-        ContactType[] contactTypes = ContactType.values();
-        for (ContactType contactType : contactTypes) {
-            System.out.print(contactType.getTitle() + ": ");
-            String contact = contacts.get(contactType);
-            System.out.println(contact);
-        }
-
-        SectionType[] sectionTypes = SectionType.values();
-        for (SectionType sectionType : sectionTypes) {
-            System.out.println(sectionType.getTitle());
-            Section section = sections.get(sectionType);
-            System.out.println(section);
-        }
+        return educations;
     }
 }
