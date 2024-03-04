@@ -1,5 +1,6 @@
 package com.yoxaron.webapp.storage;
 
+import com.yoxaron.webapp.ResumeTestData;
 import com.yoxaron.webapp.exception.ExistStorageException;
 import com.yoxaron.webapp.exception.NotExistStorageException;
 import com.yoxaron.webapp.model.Resume;
@@ -17,10 +18,10 @@ public abstract class AbstractStorageTest {
     private static final String UUID_4 = "uuid4";
     private static final String UUID_NOT_EXIST = "dummy";
 
-    private static final Resume RESUME_1 = new Resume(UUID_1, "FullName1");
-    private static final Resume RESUME_2 = new Resume(UUID_2, "FullName2");
-    private static final Resume RESUME_3 = new Resume(UUID_3, "FullName3");
-    private static final Resume RESUME_4 = new Resume(UUID_4, "FullName4");
+    private static final Resume RESUME_1 = ResumeTestData.createFilledResume(UUID_1, "FullName1");
+    private static final Resume RESUME_2 = ResumeTestData.createFilledResume(UUID_2, "FullName2");
+    private static final Resume RESUME_3 = ResumeTestData.createFilledResume(UUID_3, "FullName3");
+    private static final Resume RESUME_4 = ResumeTestData.createFilledResume(UUID_4, "FullName4");
 
     protected final Storage storage;
 
@@ -70,14 +71,14 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
-        Resume r = new Resume(UUID_1, "New Name");
+        Resume r = ResumeTestData.createFilledResume(UUID_1, "New Name");
         storage.update(r);
         Assertions.assertSame(r, storage.get(UUID_1));
     }
 
     @Test
     public void updateNotExist() {
-        Resume r = new Resume(UUID_NOT_EXIST, "dummy");
+        Resume r = ResumeTestData.createFilledResume(UUID_NOT_EXIST, "dummy");
         Assertions.assertThrows(NotExistStorageException.class, () -> storage.update(r));
     }
 
