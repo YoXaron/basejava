@@ -15,12 +15,6 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected final Resume[] storage = new Resume[STORAGE_CAPACITY];
     protected int size;
 
-    protected abstract Integer getSearchKey(String uuid);
-
-    protected abstract void saveToArrayStorage(Resume r, int index);
-
-    protected abstract void deleteFromArrayStorage(int index);
-
     /**
      * @return array, contains only Resumes in storage (without null)
      */
@@ -66,4 +60,10 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected boolean isExist(Integer index) {
         return index >= 0;
     }
+
+    protected abstract Integer getSearchKey(String uuid);
+
+    protected abstract void saveToArrayStorage(Resume r, int index);
+
+    protected abstract void deleteFromArrayStorage(int index);
 }

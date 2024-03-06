@@ -12,20 +12,6 @@ public abstract class AbstractStorage<T> implements Storage {
 
     private static final Logger LOG = Logger.getLogger(AbstractStorage.class.getName());
 
-    protected abstract T getSearchKey(String uuid);
-
-    protected abstract List<Resume> doGetAll();
-
-    protected abstract Resume doGet(T searchKey);
-
-    protected abstract void doSave(Resume r, T searchKey);
-
-    protected abstract void doUpdate(Resume r, T searchKey);
-
-    protected abstract void doDelete(T searchKey);
-
-    protected abstract boolean isExist(T searchKey);
-
     public final List<Resume> getAllSorted() {
         LOG.info("GetAllSorted");
         List<Resume> list = doGetAll();
@@ -78,4 +64,18 @@ public abstract class AbstractStorage<T> implements Storage {
             throw new ExistStorageException(uuid);
         }
     }
+
+    protected abstract T getSearchKey(String uuid);
+
+    protected abstract List<Resume> doGetAll();
+
+    protected abstract Resume doGet(T searchKey);
+
+    protected abstract void doSave(Resume r, T searchKey);
+
+    protected abstract void doUpdate(Resume r, T searchKey);
+
+    protected abstract void doDelete(T searchKey);
+
+    protected abstract boolean isExist(T searchKey);
 }

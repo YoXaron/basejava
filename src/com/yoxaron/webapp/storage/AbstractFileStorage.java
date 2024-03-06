@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
-    private File directory;
+    private final File directory;
 
     protected AbstractFileStorage(File directory) {
         Objects.requireNonNull(directory, "directory must not be null");
@@ -27,10 +27,6 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         this.directory = directory;
     }
 
-    protected abstract void doWrite(Resume r, File file) throws IOException;
-
-    protected abstract Resume doRead(File file) throws IOException;
-
     @Override
     protected File getSearchKey(String uuid) {
         return new File(directory, uuid);
@@ -40,7 +36,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected List<Resume> doGetAll() {
         List<Resume> resumes = new ArrayList<>();
 
-        File[] files = directory.listFiles();
+        File[] files = getFiles(directory);
         for (File file : files) {
             resumes.add(doGet(file));
         }
@@ -93,11 +89,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-        File[] files = directory.listFiles();
-
-        if (files == null) {
-            return;
-        }
+        File[] files = getFiles(directory);
 
         for (File file : files) {
             doDelete(file);
@@ -106,6 +98,18 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     public int size() {
-        return Objects.requireNonNull(directory.listFiles()).length;
+        return getFiles(directory).length;
     }
+
+    private File[] getFiles(File directory) {
+        File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("Directory is empty");
+        }
+        return files;
+    }
+
+    protected abstract void doWrite(Resume r, File file) throws IOException;
+
+    protected abstract Resume doRead(File file) throws IOException;
 }
