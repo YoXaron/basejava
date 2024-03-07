@@ -1,5 +1,7 @@
 package com.yoxaron.webapp.model;
 
+import com.yoxaron.webapp.util.DateUtil;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -9,6 +11,10 @@ public class Period {
     private final LocalDate end;
     private final String title;
     private final String description;
+
+    public Period(LocalDate begin, String title, String description) {
+        this(begin, DateUtil.NOW, title, description);
+    }
 
     public Period(LocalDate begin, LocalDate end, String title, String description) {
         Objects.requireNonNull(begin);

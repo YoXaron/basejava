@@ -1,8 +1,8 @@
 package com.yoxaron.webapp;
 
 import com.yoxaron.webapp.model.*;
+import com.yoxaron.webapp.util.DateUtil;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -135,15 +135,14 @@ public class ResumeTestData {
         List<Organization> organizations = new ArrayList<>();
         organizations.add(new Organization("Java Online Projects", "http://javaops.ru/",
                 List.of(new Period(
-                        LocalDate.of(2013, 10, 1),
-                        LocalDate.now(),
+                        DateUtil.of(2013, 10),
                         "Автор проекта.",
                         "Создание, организация и проведение Java онлайн проектов и стажировок."))));
 
         organizations.add(new Organization("Wrike", "https://www.wrike.com/",
                 List.of(new Period(
-                        LocalDate.of(2014, 10, 1),
-                        LocalDate.of(2016, 1, 1),
+                        DateUtil.of(2014, 10),
+                        DateUtil.of(2016, 1),
                         "Старший разработчик (backend)",
                         "Проектирование и разработка онлайн платформы управления проектами Wrike " +
                                 "(Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). " +
@@ -151,8 +150,8 @@ public class ResumeTestData {
 
         organizations.add(new Organization("RIT Center", "",
                 List.of(new Period(
-                        LocalDate.of(2012, 4, 1),
-                        LocalDate.of(2014, 10, 1),
+                        DateUtil.of(2012, 4),
+                        DateUtil.of(2014, 10),
                         "Java архитектор",
                         "Организация процесса разработки системы ERP для разных окружений: релизная " +
                                 "политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация " +
@@ -166,8 +165,8 @@ public class ResumeTestData {
 
         organizations.add(new Organization("Luxoft (Deutsche Bank)", "",
                 List.of(new Period(
-                        LocalDate.of(2010, 12, 1),
-                        LocalDate.of(2012, 04, 1),
+                        DateUtil.of(2010, 12),
+                        DateUtil.of(2012, 04),
                         "Ведущий программист",
                         "Участие в проекте Deutsche Bank CRM (WebLogic, Hibernate, Spring, Spring MVC, " +
                                 "SmartGWT, GWT, Jasper, Oracle). Реализация клиентской и серверной части CRM. " +
@@ -183,8 +182,8 @@ public class ResumeTestData {
                 "https://www.coursera.org/learn/scala-functional-programming",
                 List.of(
                         new Period(
-                                LocalDate.of(2013, 3, 1),
-                                LocalDate.of(2013, 5, 1),
+                                DateUtil.of(2013, 3),
+                                DateUtil.of(2013, 5),
                                 "Functional Programming Principles in Scala by Martin Odersky",
                                 null
                         )
@@ -195,8 +194,8 @@ public class ResumeTestData {
                 "",
                 List.of(
                         new Period(
-                                LocalDate.of(2011, 3, 1),
-                                LocalDate.of(2011, 4, 1),
+                                DateUtil.of(2011, 3),
+                                DateUtil.of(2011, 4),
                                 "Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.",
                                 null
                         )
@@ -208,15 +207,15 @@ public class ResumeTestData {
                 "itmo.ru",
                 List.of(
                         new Period(
-                                LocalDate.of(1993, 9, 1),
-                                LocalDate.of(1996, 7, 1),
+                                DateUtil.of(1993, 9),
+                                DateUtil.of(1996, 7),
                                 "Аспирантура (программист С, С++)",
                                 null
                         ),
 
                         new Period(
-                                LocalDate.of(1987, 9, 1),
-                                LocalDate.of(1993, 7, 1),
+                                DateUtil.of(1987, 9),
+                                DateUtil.of(1993, 7),
                                 "Инженер программист",
                                 null
                         )
