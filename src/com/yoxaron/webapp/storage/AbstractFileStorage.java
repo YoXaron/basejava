@@ -49,7 +49,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         try {
             return doRead(file);
         } catch (IOException e) {
-            throw new StorageException("Failed to create file", file.getName(), e);
+            throw new StorageException("Failed to read file", file.getName(), e);
         }
     }
 
@@ -104,7 +104,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     private File[] getFiles(File directory) {
         File[] files = directory.listFiles();
         if (files == null) {
-            throw new StorageException("Directory is empty");
+            throw new StorageException("Failed to get files from the directory");
         }
         return files;
     }

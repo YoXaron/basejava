@@ -166,7 +166,7 @@ public class ResumeTestData {
         organizations.add(new Organization("Luxoft (Deutsche Bank)", "",
                 List.of(new Period(
                         DateUtil.of(2010, 12),
-                        DateUtil.of(2012, 04),
+                        DateUtil.of(2012, 4),
                         "Ведущий программист",
                         "Участие в проекте Deutsche Bank CRM (WebLogic, Hibernate, Spring, Spring MVC, " +
                                 "SmartGWT, GWT, Jasper, Oracle). Реализация клиентской и серверной части CRM. " +
