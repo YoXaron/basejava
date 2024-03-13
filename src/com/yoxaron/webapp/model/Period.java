@@ -8,6 +8,8 @@ import java.util.Objects;
 
 public class Period implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private final LocalDate begin;
     private final LocalDate end;
     private final String title;
