@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.util.List;
 
 public abstract class AbstractStorageTest {
@@ -22,6 +23,8 @@ public abstract class AbstractStorageTest {
     private static final Resume RESUME_2 = ResumeTestData.createFilledResume(UUID_2, "FullName2");
     private static final Resume RESUME_3 = ResumeTestData.createFilledResume(UUID_3, "FullName3");
     private static final Resume RESUME_4 = ResumeTestData.createFilledResume(UUID_4, "FullName4");
+
+    protected static final File STORAGE_DIR = new File("/Users/yoxaron/IdeaProjects/basejava/storage");
 
     protected final Storage storage;
 
