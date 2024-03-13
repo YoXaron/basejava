@@ -1,5 +1,6 @@
 package com.yoxaron.webapp.storage;
 
+import com.yoxaron.webapp.exception.StorageException;
 import com.yoxaron.webapp.model.Resume;
 
 import java.io.*;
@@ -19,14 +20,10 @@ public class ObjectStreamStorage extends AbstractFileStorage {
 
     @Override
     protected Resume doRead(InputStream inputStream) throws IOException {
-        Resume r;
-
         try (ObjectInputStream ois = new ObjectInputStream(inputStream)) {
-            r = (Resume) ois.readObject();
+            return (Resume) ois.readObject();
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new StorageException("Failed to deserialize the object", null, e);
         }
-
-        return r;
     }
 }
