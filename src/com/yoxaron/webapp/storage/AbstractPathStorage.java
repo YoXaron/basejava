@@ -3,14 +3,14 @@ package com.yoxaron.webapp.storage;
 import com.yoxaron.webapp.exception.StorageException;
 import com.yoxaron.webapp.model.Resume;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class AbstractPathStorage extends AbstractStorage<Path> {
 
@@ -21,43 +21,63 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         Objects.requireNonNull(directory, "directory must not be null");
 
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
-            throw new IllegalArgumentException(dir + "is not a directory or not writable");
+            throw new IllegalArgumentException(dir + " is not a directory or not writable");
         }
     }
 
     @Override
     protected Path getSearchKey(String uuid) {
-        return null;
+        return Paths.get(directory.getFileName().toString(), uuid);
     }
 
     @Override
     protected List<Resume> doGetAll() {
-        return null;
+        return getDirectoryStream()
+                .filter(Files::isRegularFile)
+                .map(this::doGet)
+                .collect(Collectors.toList());
     }
 
     @Override
-    protected Resume doGet(Path file) {
-        return null;
+    protected Resume doGet(Path path) {
+        try {
+            return doRead(Files.newInputStream(path));
+        } catch (IOException e) {
+            throw new StorageException("Failed to read file", null, e);
+        }
     }
 
     @Override
-    protected void doSave(Resume r, Path file) {
-
+    protected void doSave(Resume r, Path path) {
+        try {
+            Files.createFile(path);
+        } catch (IOException e) {
+            throw new StorageException("Failed to create file", null, e);
+        }
+        doUpdate(r, path);
     }
 
     @Override
-    protected void doUpdate(Resume r, Path file) {
-
+    protected void doUpdate(Resume r, Path path) {
+        try {
+            doWrite(r, new BufferedOutputStream(Files.newOutputStream(path)));
+        } catch (IOException e) {
+            throw new StorageException("Failed to write to file", null, e);
+        }
     }
 
     @Override
-    protected void doDelete(Path file) {
-
+    protected void doDelete(Path path) {
+        try {
+            Files.delete(path);
+        } catch (IOException e) {
+            throw new StorageException("Failed to delete file", null, e);
+        }
     }
 
     @Override
-    protected boolean isExist(Path file) {
-        return false;
+    protected boolean isExist(Path path) {
+        return Files.exists(path);
     }
 
     @Override
@@ -71,11 +91,15 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
 
     @Override
     public int size() {
-        return getFiles(directory).length;
+        return (int) getDirectoryStream().count();
     }
 
-    private Path[] getFiles(Path directory) {
-        return null;
+    private Stream<Path> getDirectoryStream() {
+        try {
+            return Files.list(directory);
+        } catch (IOException e) {
+            throw new StorageException("Failed to get directory stream", null, e);
+        }
     }
 
     protected abstract void doWrite(Resume r, OutputStream outputStream) throws IOException;
