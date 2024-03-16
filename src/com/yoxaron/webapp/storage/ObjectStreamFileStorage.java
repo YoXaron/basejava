@@ -5,9 +5,9 @@ import com.yoxaron.webapp.model.Resume;
 
 import java.io.*;
 
-public class ObjectStreamStorage extends AbstractFileStorage {
+public class ObjectStreamFileStorage extends AbstractFileStorage {
 
-    protected ObjectStreamStorage(File directory) {
+    protected ObjectStreamFileStorage(File directory) {
         super(directory);
     }
 
