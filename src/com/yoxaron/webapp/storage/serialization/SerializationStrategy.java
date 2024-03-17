@@ -1,4 +1,4 @@
-package com.yoxaron.webapp.storage;
+package com.yoxaron.webapp.storage.serialization;
 
 import com.yoxaron.webapp.model.Resume;
 

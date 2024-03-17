@@ -2,6 +2,7 @@ package com.yoxaron.webapp.storage;
 
 import com.yoxaron.webapp.exception.StorageException;
 import com.yoxaron.webapp.model.Resume;
+import com.yoxaron.webapp.storage.serialization.SerializationStrategy;
 
 import java.io.*;
 import java.util.ArrayList;
