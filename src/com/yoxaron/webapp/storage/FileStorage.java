@@ -61,12 +61,11 @@ public class FileStorage extends AbstractStorage<File> {
         try {
             if (!file.createNewFile()) {
                 throw new StorageException("Failed to create file", file.getName());
-            } else {
-                strategy.doWrite(r, new BufferedOutputStream(new FileOutputStream(file)));
             }
         } catch (IOException e) {
-            throw new StorageException("Failed to write to file", file.getName(), e);
+            throw new StorageException("Failed to create file", file.getAbsolutePath(), e);
         }
+        doUpdate(r, file);
     }
 
     @Override

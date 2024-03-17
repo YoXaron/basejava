@@ -31,7 +31,7 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected Path getSearchKey(String uuid) {
-        return Paths.get(directory.getFileName().toString(), uuid);
+        return directory.resolve(uuid);
     }
 
     @Override
@@ -86,11 +86,7 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     public void clear() {
-        try {
-            Files.list(directory).forEach(this::doDelete);
-        } catch (IOException e) {
-            throw new StorageException("Failed to clear directory");
-        }
+        getDirectoryStream().forEach(this::doDelete);
     }
 
     @Override
