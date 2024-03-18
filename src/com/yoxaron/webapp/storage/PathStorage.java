@@ -4,7 +4,8 @@ import com.yoxaron.webapp.exception.StorageException;
 import com.yoxaron.webapp.model.Resume;
 import com.yoxaron.webapp.storage.serialization.SerializationStrategy;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,7 +48,7 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             return strategy.doRead(Files.newInputStream(path));
         } catch (IOException e) {
-            throw new StorageException("Failed to read file", null, e);
+            throw new StorageException("Failed to read file " + path, getFileName(path), e);
         }
     }
 
@@ -56,7 +57,7 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             Files.createFile(path);
         } catch (IOException e) {
-            throw new StorageException("Failed to create file", null, e);
+            throw new StorageException("Failed to create file " + path, getFileName(path), e);
         }
         doUpdate(r, path);
     }
@@ -66,7 +67,7 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             strategy.doWrite(r, new BufferedOutputStream(Files.newOutputStream(path)));
         } catch (IOException e) {
-            throw new StorageException("Failed to write to file", null, e);
+            throw new StorageException("Failed to write to file " + path, getFileName(path), e);
         }
     }
 
@@ -75,7 +76,7 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             Files.delete(path);
         } catch (IOException e) {
-            throw new StorageException("Failed to delete file", null, e);
+            throw new StorageException("Failed to delete file " + path, getFileName(path), e);
         }
     }
 
@@ -100,5 +101,9 @@ public class PathStorage extends AbstractStorage<Path> {
         } catch (IOException e) {
             throw new StorageException("Failed to get directory stream", null, e);
         }
+    }
+
+    private String getFileName(Path path) {
+        return path.getFileName().toString();
     }
 }
