@@ -5,7 +5,7 @@ import com.yoxaron.webapp.model.Resume;
 
 import java.io.*;
 
-public class ObjectStreamSerialization implements SerializationStrategy {
+public class ObjectStreamSerializer implements SerializationStrategy {
 
     @Override
     public void doWrite(Resume r, OutputStream outputStream) throws IOException {
