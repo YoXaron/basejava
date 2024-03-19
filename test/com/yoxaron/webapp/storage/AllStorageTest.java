@@ -11,7 +11,8 @@ import org.junit.platform.suite.api.Suite;
         MapUuidStorageTest.class,
         MapResumeStorageTest.class,
         ObjectStreamFileStorageTest.class,
-        ObjectStreamPathStorageTest.class
+        ObjectStreamPathStorageTest.class,
+        XmlPathStorageTest.class
 })
 public class AllStorageTest {
 }

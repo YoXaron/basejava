@@ -1,9 +1,11 @@
 package com.yoxaron.webapp.model;
 
 import com.yoxaron.webapp.util.DateUtil;
+import com.yoxaron.webapp.util.LocalDateAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -13,8 +15,12 @@ public class Period implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate begin;
+
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate end;
+
     private String title;
     private String description;
 
