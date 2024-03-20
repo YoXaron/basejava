@@ -6,11 +6,13 @@ import com.yoxaron.webapp.model.Section;
 
 import java.io.Reader;
 import java.io.Writer;
+import java.time.LocalDate;
 
 public class JsonParser {
 
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(Section.class, new JsonSectionAdapter())
+            .registerTypeAdapter(LocalDate.class, new JsonLocalDateAdapter())
             .create();
 
     public static <T> T read(Reader reader, Class<T> clazz) {
