@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 public class JsonParser {
+
     private static final Gson GSON = new GsonBuilder().create();
 
     public static <T> T read(Reader reader, Class<T> clazz) {
@@ -16,5 +17,4 @@ public class JsonParser {
     public static <T> void write(T object, Writer writer) {
         GSON.toJson(object, writer);
     }
-
 }
