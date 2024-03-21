@@ -13,6 +13,7 @@ public class JsonParser {
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(Section.class, new JsonSectionAdapter())
             .registerTypeAdapter(LocalDate.class, new JsonLocalDateAdapter())
+            .setPrettyPrinting()
             .create();
 
     public static <T> T read(Reader reader, Class<T> clazz) {
