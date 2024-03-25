@@ -59,14 +59,13 @@ public class DataStreamSerializer implements SerializationStrategy {
     private void writeSections(DataOutputStream dos, Map<SectionType, Section> sections) throws IOException {
         dos.writeInt(sections.size());
         for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
-            dos.writeUTF(entry.getKey().name());
+            SectionType sectionType = entry.getKey();
             Section section = entry.getValue();
-            if (section instanceof TextSection) {
-                writeTextSection(dos, (TextSection) section);
-            } else if (section instanceof ListSection) {
-                writeListSection(dos, (ListSection) section);
-            } else if (section instanceof OrganizationSection) {
-                writeOrganizationSection(dos, (OrganizationSection) section);
+            dos.writeUTF(sectionType.name());
+            switch (sectionType) {
+                case PERSONAL, OBJECTIVE -> writeTextSection(dos, (TextSection) section);
+                case ACHIEVEMENTS, QUALIFICATIONS -> writeListSection(dos, (ListSection) section);
+                case EXPERIENCE, EDUCATION -> writeOrganizationSection(dos, (OrganizationSection) section);
             }
         }
     }
@@ -76,20 +75,11 @@ public class DataStreamSerializer implements SerializationStrategy {
         for (int i = 0; i < sectionsSize; i++) {
             SectionType sectionType = SectionType.valueOf(dis.readUTF());
             switch (sectionType) {
-                case SectionType.PERSONAL:
-                case SectionType.OBJECTIVE:
-                    sections.put(sectionType, readTextSection(dis));
-                    break;
-                case SectionType.ACHIEVEMENTS:
-                case SectionType.QUALIFICATIONS:
-                    sections.put(sectionType, readListSection(dis));
-                    break;
-                case SectionType.EXPERIENCE:
-                case SectionType.EDUCATION:
-                    sections.put(sectionType, readOrganizationSection(dis));
-                    break;
-                default:
-                    throw new StorageException("DataStreamSerializer: unknown section class: " + sectionType.name());
+                case PERSONAL, OBJECTIVE -> sections.put(sectionType, readTextSection(dis));
+                case ACHIEVEMENTS, QUALIFICATIONS -> sections.put(sectionType, readListSection(dis));
+                case EXPERIENCE, EDUCATION -> sections.put(sectionType, readOrganizationSection(dis));
+                default ->
+                        throw new StorageException("DataStreamSerializer: unknown section class: " + sectionType.name());
             }
         }
         return sections;
