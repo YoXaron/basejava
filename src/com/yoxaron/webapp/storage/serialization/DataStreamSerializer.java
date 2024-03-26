@@ -2,13 +2,11 @@ package com.yoxaron.webapp.storage.serialization;
 
 import com.yoxaron.webapp.exception.StorageException;
 import com.yoxaron.webapp.model.*;
+import com.yoxaron.webapp.util.DataConsumer;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DataStreamSerializer implements SerializationStrategy {
 
@@ -19,10 +17,25 @@ public class DataStreamSerializer implements SerializationStrategy {
             dos.writeUTF(r.getFullName());
 
             Map<ContactType, String> contacts = r.getContacts();
-            writeContacts(dos, contacts);
+//            writeContacts(dos, contacts);
+            writeWithException(contacts.entrySet(), dos, entry -> {
+                dos.writeUTF(entry.getKey().name());
+                dos.writeUTF(entry.getValue());
+            });
+
 
             Map<SectionType, Section> sections = r.getSections();
-            writeSections(dos, sections);
+//            writeSections(dos, sections);
+            writeWithException(sections.entrySet(), dos, entry -> {
+                SectionType sectionType = entry.getKey();
+                Section section = entry.getValue();
+                dos.writeUTF(sectionType.name());
+                switch (sectionType) {
+                    case PERSONAL, OBJECTIVE -> writeTextSection(dos, (TextSection) section);
+                    case ACHIEVEMENTS, QUALIFICATIONS -> writeListSection(dos, (ListSection) section);
+                    case EXPERIENCE, EDUCATION -> writeOrganizationSection(dos, (OrganizationSection) section);
+                }
+            });
         }
     }
 
@@ -40,13 +53,13 @@ public class DataStreamSerializer implements SerializationStrategy {
         }
     }
 
-    private void writeContacts(DataOutputStream dos, Map<ContactType, String> contacts) throws IOException {
-        dos.writeInt(contacts.size());
-        for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
-            dos.writeUTF(entry.getKey().name());
-            dos.writeUTF(entry.getValue());
-        }
-    }
+//    private void writeContacts(DataOutputStream dos, Map<ContactType, String> contacts) throws IOException {
+//        dos.writeInt(contacts.size());
+//        for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
+//            dos.writeUTF(entry.getKey().name());
+//            dos.writeUTF(entry.getValue());
+//        }
+//    }
 
     private Map<ContactType, String> readContacts(DataInputStream dis, Map<ContactType, String> contacts) throws IOException {
         int contactsSize = dis.readInt();
@@ -56,19 +69,19 @@ public class DataStreamSerializer implements SerializationStrategy {
         return contacts;
     }
 
-    private void writeSections(DataOutputStream dos, Map<SectionType, Section> sections) throws IOException {
-        dos.writeInt(sections.size());
-        for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
-            SectionType sectionType = entry.getKey();
-            Section section = entry.getValue();
-            dos.writeUTF(sectionType.name());
-            switch (sectionType) {
-                case PERSONAL, OBJECTIVE -> writeTextSection(dos, (TextSection) section);
-                case ACHIEVEMENTS, QUALIFICATIONS -> writeListSection(dos, (ListSection) section);
-                case EXPERIENCE, EDUCATION -> writeOrganizationSection(dos, (OrganizationSection) section);
-            }
-        }
-    }
+//    private void writeSections(DataOutputStream dos, Map<SectionType, Section> sections) throws IOException {
+//        dos.writeInt(sections.size());
+//        for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
+//            SectionType sectionType = entry.getKey();
+//            Section section = entry.getValue();
+//            dos.writeUTF(sectionType.name());
+//            switch (sectionType) {
+//                case PERSONAL, OBJECTIVE -> writeTextSection(dos, (TextSection) section);
+//                case ACHIEVEMENTS, QUALIFICATIONS -> writeListSection(dos, (ListSection) section);
+//                case EXPERIENCE, EDUCATION -> writeOrganizationSection(dos, (OrganizationSection) section);
+//            }
+//        }
+//    }
 
     private Map<SectionType, Section> readSections(DataInputStream dis, Map<SectionType, Section> sections) throws IOException {
         int sectionsSize = dis.readInt();
@@ -154,5 +167,12 @@ public class DataStreamSerializer implements SerializationStrategy {
             organizations.add(new Organization(orgName, orgLink, periods));
         }
         return new OrganizationSection(organizations);
+    }
+
+    private <T> void writeWithException(Collection<T> collection, DataOutputStream dos, DataConsumer<T> action) throws IOException {
+        dos.writeInt(collection.size());
+        for (T item : collection) {
+            action.accept(item);
+        }
     }
 }
