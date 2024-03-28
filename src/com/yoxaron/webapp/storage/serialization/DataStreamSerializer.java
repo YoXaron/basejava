@@ -17,25 +17,10 @@ public class DataStreamSerializer implements SerializationStrategy {
             dos.writeUTF(r.getFullName());
 
             Map<ContactType, String> contacts = r.getContacts();
-//            writeContacts(dos, contacts);
-            writeWithException(contacts.entrySet(), dos, entry -> {
-                dos.writeUTF(entry.getKey().name());
-                dos.writeUTF(entry.getValue());
-            });
-
+            writeContacts(dos, contacts);
 
             Map<SectionType, Section> sections = r.getSections();
-//            writeSections(dos, sections);
-            writeWithException(sections.entrySet(), dos, entry -> {
-                SectionType sectionType = entry.getKey();
-                Section section = entry.getValue();
-                dos.writeUTF(sectionType.name());
-                switch (sectionType) {
-                    case PERSONAL, OBJECTIVE -> writeTextSection(dos, (TextSection) section);
-                    case ACHIEVEMENTS, QUALIFICATIONS -> writeListSection(dos, (ListSection) section);
-                    case EXPERIENCE, EDUCATION -> writeOrganizationSection(dos, (OrganizationSection) section);
-                }
-            });
+            writeSections(dos, sections);
         }
     }
 
@@ -53,39 +38,33 @@ public class DataStreamSerializer implements SerializationStrategy {
         }
     }
 
-//    private void writeContacts(DataOutputStream dos, Map<ContactType, String> contacts) throws IOException {
-//        dos.writeInt(contacts.size());
-//        for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
-//            dos.writeUTF(entry.getKey().name());
-//            dos.writeUTF(entry.getValue());
-//        }
-//    }
+    private void writeContacts(DataOutputStream dos, Map<ContactType, String> contacts) throws IOException {
+        writeWithException(contacts.entrySet(), dos, entry -> {
+            dos.writeUTF(entry.getKey().name());
+            dos.writeUTF(entry.getValue());
+        });
+    }
 
     private Map<ContactType, String> readContacts(DataInputStream dis, Map<ContactType, String> contacts) throws IOException {
-        int contactsSize = dis.readInt();
-        for (int i = 0; i < contactsSize; i++) {
-            contacts.put(ContactType.valueOf(dis.readUTF()), dis.readUTF());
-        }
+        readWithException(dis, dummy -> contacts.put(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
         return contacts;
     }
 
-//    private void writeSections(DataOutputStream dos, Map<SectionType, Section> sections) throws IOException {
-//        dos.writeInt(sections.size());
-//        for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
-//            SectionType sectionType = entry.getKey();
-//            Section section = entry.getValue();
-//            dos.writeUTF(sectionType.name());
-//            switch (sectionType) {
-//                case PERSONAL, OBJECTIVE -> writeTextSection(dos, (TextSection) section);
-//                case ACHIEVEMENTS, QUALIFICATIONS -> writeListSection(dos, (ListSection) section);
-//                case EXPERIENCE, EDUCATION -> writeOrganizationSection(dos, (OrganizationSection) section);
-//            }
-//        }
-//    }
+    private void writeSections(DataOutputStream dos, Map<SectionType, Section> sections) throws IOException {
+        writeWithException(sections.entrySet(), dos, entry -> {
+            SectionType sectionType = entry.getKey();
+            Section section = entry.getValue();
+            dos.writeUTF(sectionType.name());
+            switch (sectionType) {
+                case PERSONAL, OBJECTIVE -> writeTextSection(dos, (TextSection) section);
+                case ACHIEVEMENTS, QUALIFICATIONS -> writeListSection(dos, (ListSection) section);
+                case EXPERIENCE, EDUCATION -> writeOrganizationSection(dos, (OrganizationSection) section);
+            }
+        });
+    }
 
     private Map<SectionType, Section> readSections(DataInputStream dis, Map<SectionType, Section> sections) throws IOException {
-        int sectionsSize = dis.readInt();
-        for (int i = 0; i < sectionsSize; i++) {
+        readWithException(dis, dummy -> {
             SectionType sectionType = SectionType.valueOf(dis.readUTF());
             switch (sectionType) {
                 case PERSONAL, OBJECTIVE -> sections.put(sectionType, readTextSection(dis));
@@ -94,7 +73,7 @@ public class DataStreamSerializer implements SerializationStrategy {
                 default ->
                         throw new StorageException("DataStreamSerializer: unknown section class: " + sectionType.name());
             }
-        }
+        });
         return sections;
     }
 
@@ -108,31 +87,22 @@ public class DataStreamSerializer implements SerializationStrategy {
 
     private void writeListSection(DataOutputStream dos, ListSection section) throws IOException {
         List<String> list = section.getList();
-        dos.writeInt(list.size());
-        for (String s : list) {
-            dos.writeUTF(s);
-        }
+        writeWithException(list, dos, dos::writeUTF);
     }
 
     private ListSection readListSection(DataInputStream dis) throws IOException {
-        int listSize = dis.readInt();
         List<String> list = new ArrayList<>();
-        for (int j = 0; j < listSize; j++) {
-            String item = dis.readUTF();
-            list.add(item);
-        }
+        readWithException(dis, dummy -> list.add(dis.readUTF()));
         return new ListSection(list);
     }
 
     private void writeOrganizationSection(DataOutputStream dos, OrganizationSection section) throws IOException {
         List<Organization> organizations = section.getOrganizations();
-        dos.writeInt(organizations.size());
-        for (Organization org : organizations) {
+        writeWithException(organizations, dos, org -> {
             dos.writeUTF(org.getName());
             dos.writeUTF(org.getLink());
             List<Period> periods = org.getPeriods();
-            dos.writeInt(periods.size());
-            for (Period period : periods) {
+            writeWithException(periods, dos, period -> {
                 dos.writeLong(period.getBegin().toEpochDay());
                 dos.writeLong(period.getEnd().toEpochDay());
                 dos.writeUTF(period.getTitle());
@@ -141,19 +111,17 @@ public class DataStreamSerializer implements SerializationStrategy {
                 if (hasDescription) {
                     dos.writeUTF(period.getDescription());
                 }
-            }
-        }
+            });
+        });
     }
 
     private OrganizationSection readOrganizationSection(DataInputStream dis) throws IOException {
-        int orgSize = dis.readInt();
         List<Organization> organizations = new ArrayList<>();
-        for (int j = 0; j < orgSize; j++) {
+        readWithException(dis, dummyOrg -> {
             String orgName = dis.readUTF();
             String orgLink = dis.readUTF();
-            int periodsSize = dis.readInt();
             List<Period> periods = new ArrayList<>();
-            for (int k = 0; k < periodsSize; k++) {
+            readWithException(dis, dummyPeriod -> {
                 LocalDate begin = LocalDate.ofEpochDay(dis.readLong());
                 LocalDate end = LocalDate.ofEpochDay(dis.readLong());
                 String title = dis.readUTF();
@@ -163,9 +131,9 @@ public class DataStreamSerializer implements SerializationStrategy {
                     description = dis.readUTF();
                 }
                 periods.add(new Period(begin, end, title, description));
-            }
+            });
             organizations.add(new Organization(orgName, orgLink, periods));
-        }
+        });
         return new OrganizationSection(organizations);
     }
 
@@ -173,6 +141,13 @@ public class DataStreamSerializer implements SerializationStrategy {
         dos.writeInt(collection.size());
         for (T item : collection) {
             action.accept(item);
+        }
+    }
+
+    private void readWithException(DataInputStream dis, DataConsumer<DataInputStream> action) throws IOException {
+        int size = dis.readInt();
+        for (int i = 0; i < size; i++) {
+            action.accept(dis);
         }
     }
 }
