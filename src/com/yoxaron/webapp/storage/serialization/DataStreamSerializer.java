@@ -3,6 +3,7 @@ package com.yoxaron.webapp.storage.serialization;
 import com.yoxaron.webapp.exception.StorageException;
 import com.yoxaron.webapp.model.*;
 import com.yoxaron.webapp.util.DataConsumer;
+import com.yoxaron.webapp.util.DeserializationAction;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -46,7 +47,7 @@ public class DataStreamSerializer implements SerializationStrategy {
     }
 
     private Map<ContactType, String> readContacts(DataInputStream dis, Map<ContactType, String> contacts) throws IOException {
-        readWithException(dis, dummy -> contacts.put(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
+        readWithException(dis, () -> contacts.put(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
         return contacts;
     }
 
@@ -64,7 +65,7 @@ public class DataStreamSerializer implements SerializationStrategy {
     }
 
     private Map<SectionType, Section> readSections(DataInputStream dis, Map<SectionType, Section> sections) throws IOException {
-        readWithException(dis, dummy -> {
+        readWithException(dis, () -> {
             SectionType sectionType = SectionType.valueOf(dis.readUTF());
             switch (sectionType) {
                 case PERSONAL, OBJECTIVE -> sections.put(sectionType, readTextSection(dis));
@@ -92,7 +93,7 @@ public class DataStreamSerializer implements SerializationStrategy {
 
     private ListSection readListSection(DataInputStream dis) throws IOException {
         List<String> list = new ArrayList<>();
-        readWithException(dis, dummy -> list.add(dis.readUTF()));
+        readWithException(dis, () -> list.add(dis.readUTF()));
         return new ListSection(list);
     }
 
@@ -117,11 +118,11 @@ public class DataStreamSerializer implements SerializationStrategy {
 
     private OrganizationSection readOrganizationSection(DataInputStream dis) throws IOException {
         List<Organization> organizations = new ArrayList<>();
-        readWithException(dis, dummyOrg -> {
+        readWithException(dis, () -> {
             String orgName = dis.readUTF();
             String orgLink = dis.readUTF();
             List<Period> periods = new ArrayList<>();
-            readWithException(dis, dummyPeriod -> {
+            readWithException(dis, () -> {
                 LocalDate begin = LocalDate.ofEpochDay(dis.readLong());
                 LocalDate end = LocalDate.ofEpochDay(dis.readLong());
                 String title = dis.readUTF();
@@ -144,10 +145,10 @@ public class DataStreamSerializer implements SerializationStrategy {
         }
     }
 
-    private void readWithException(DataInputStream dis, DataConsumer<DataInputStream> action) throws IOException {
+    private void readWithException(DataInputStream dis, DeserializationAction action) throws IOException {
         int size = dis.readInt();
         for (int i = 0; i < size; i++) {
-            action.accept(dis);
+            action.perform();
         }
     }
 }
