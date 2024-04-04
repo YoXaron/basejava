@@ -4,6 +4,7 @@ import com.yoxaron.webapp.exception.StorageException;
 import com.yoxaron.webapp.model.*;
 import com.yoxaron.webapp.util.DataConsumer;
 import com.yoxaron.webapp.util.DeserializationAction;
+import com.yoxaron.webapp.util.ListDeserializationAction;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -87,14 +88,11 @@ public class DataStreamSerializer implements SerializationStrategy {
     }
 
     private void writeListSection(DataOutputStream dos, ListSection section) throws IOException {
-        List<String> list = section.getList();
-        writeWithException(list, dos, dos::writeUTF);
+        writeWithException(section.getList(), dos, dos::writeUTF);
     }
 
     private ListSection readListSection(DataInputStream dis) throws IOException {
-        List<String> list = new ArrayList<>();
-        readWithException(dis, () -> list.add(dis.readUTF()));
-        return new ListSection(list);
+        return new ListSection(readList(dis, dis::readUTF));
     }
 
     private void writeOrganizationSection(DataOutputStream dos, OrganizationSection section) throws IOException {
@@ -117,12 +115,10 @@ public class DataStreamSerializer implements SerializationStrategy {
     }
 
     private OrganizationSection readOrganizationSection(DataInputStream dis) throws IOException {
-        List<Organization> organizations = new ArrayList<>();
-        readWithException(dis, () -> {
+        List<Organization> organizations = readList(dis, () -> {
             String orgName = dis.readUTF();
             String orgLink = dis.readUTF();
-            List<Period> periods = new ArrayList<>();
-            readWithException(dis, () -> {
+            List<Period> periods = readList(dis, () -> {
                 LocalDate begin = LocalDate.ofEpochDay(dis.readLong());
                 LocalDate end = LocalDate.ofEpochDay(dis.readLong());
                 String title = dis.readUTF();
@@ -131,9 +127,9 @@ public class DataStreamSerializer implements SerializationStrategy {
                 if (hasDescription) {
                     description = dis.readUTF();
                 }
-                periods.add(new Period(begin, end, title, description));
+                return new Period(begin, end, title, description);
             });
-            organizations.add(new Organization(orgName, orgLink, periods));
+            return new Organization(orgName, orgLink, periods);
         });
         return new OrganizationSection(organizations);
     }
@@ -150,5 +146,11 @@ public class DataStreamSerializer implements SerializationStrategy {
         for (int i = 0; i < size; i++) {
             action.perform();
         }
+    }
+
+    private <T> List<T> readList(DataInputStream dis, ListDeserializationAction<T> action) throws IOException {
+        List<T> list = new ArrayList<>();
+        readWithException(dis, () -> list.add(action.perform()));
+        return list;
     }
 }
