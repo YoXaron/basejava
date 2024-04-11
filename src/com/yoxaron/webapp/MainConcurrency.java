@@ -1,13 +1,18 @@
 package com.yoxaron.webapp;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class MainConcurrency {
 
-    private static final Object LOCK = new Object();
+//    private static final Object LOCK = new Object();
+    private static final Lock LOCK = new ReentrantLock();
     public static final int THREADS_NUMBER = 10000;
-    private static volatile int counter = 0;
+    private static int counter = 0;
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
     public static void main(String[] args) throws InterruptedException {
         System.out.println(Thread.currentThread().getName());
@@ -30,16 +35,31 @@ public class MainConcurrency {
 
         final MainConcurrency mainConcurrency = new MainConcurrency();
         CountDownLatch latch = new CountDownLatch(THREADS_NUMBER);
+        int processors = Runtime.getRuntime().availableProcessors();
+        System.out.println("Available procossors: " + processors);
+        ExecutorService executorService = Executors.newFixedThreadPool(processors);
+//        CompletionService completionService = new ExecutorCompletionService(executorService);
+//        ExecutorService executorService = Executors.newCachedThreadPool();
 //        List<Thread> threads = new ArrayList<>(THREADS_NUMBER);
 
         for (int i = 0; i < THREADS_NUMBER; i++) {
-            Thread thread = new Thread(() -> {
+            Future<Integer> future = executorService.submit(() -> {
                 for (int j = 0; j < 100; j++) {
                     mainConcurrency.increment();
+                    LocalDateTime.now().format(formatter);
                 }
                 latch.countDown();
+                return counter;
             });
-            thread.start();
+//            completionService.poll();
+
+//            Thread thread = new Thread(() -> {
+//                for (int j = 0; j < 100; j++) {
+//                    mainConcurrency.increment();
+//                }
+//                latch.countDown();
+//            });
+//            thread.start();
 //            threads.add(thread);
         }
 
@@ -52,10 +72,16 @@ public class MainConcurrency {
 //        });
 
         latch.await(10, TimeUnit.SECONDS);
+        executorService.shutdown();
         System.out.println(counter);
     }
 
-    private synchronized void increment() {
-        counter++;
+    private void increment() {
+        LOCK.lock();
+        try {
+            counter++;
+        } finally {
+            LOCK.unlock();
+        }
     }
 }
