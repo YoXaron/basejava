@@ -105,7 +105,7 @@ public class DataStreamSerializer implements SerializationStrategy {
                 dos.writeLong(period.getBegin().toEpochDay());
                 dos.writeLong(period.getEnd().toEpochDay());
                 dos.writeUTF(period.getTitle());
-                boolean hasDescription = (period.getDescription() != null);
+                boolean hasDescription = period.getDescription() != null;
                 dos.writeBoolean(hasDescription);
                 if (hasDescription) {
                     dos.writeUTF(period.getDescription());
