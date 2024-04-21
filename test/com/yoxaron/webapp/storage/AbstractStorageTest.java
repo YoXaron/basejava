@@ -1,5 +1,6 @@
 package com.yoxaron.webapp.storage;
 
+import com.yoxaron.webapp.Config;
 import com.yoxaron.webapp.ResumeTestData;
 import com.yoxaron.webapp.exception.ExistStorageException;
 import com.yoxaron.webapp.exception.NotExistStorageException;
@@ -24,7 +25,7 @@ public abstract class AbstractStorageTest {
     private static final Resume RESUME_3 = ResumeTestData.createFilledResume(UUID_3, "FullName3");
     private static final Resume RESUME_4 = ResumeTestData.createFilledResume(UUID_4, "FullName4");
 
-    protected static final File STORAGE_DIR = new File("/Users/yoxaron/IdeaProjects/basejava/storage");
+    protected static final File STORAGE_DIR = Config.getInstance().getStorageDir();
 
     protected final Storage storage;
 
