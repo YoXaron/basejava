@@ -1,15 +1,22 @@
 package com.yoxaron.webapp.exception;
 
 public class StorageException extends RuntimeException {
-    private String uuid;
+    private final String uuid;
+
+    public StorageException(Exception cause) {
+        this(cause.getMessage(), cause);
+    }
 
     public StorageException(String message) {
-        super(message);
+        this(message, null, null);
     }
 
     public StorageException(String message, String uuid) {
-        super(message);
-        this.uuid = uuid;
+        this(message, uuid, null);
+    }
+
+    public StorageException(String message, Exception cause) {
+        this(message, null, cause);
     }
 
     public StorageException(String message, String uuid, Exception cause) {
