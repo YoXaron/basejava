@@ -1,10 +1,10 @@
 package com.yoxaron.webapp.storage;
 
-import com.yoxaron.webapp.Config;
-import com.yoxaron.webapp.ResumeTestData;
 import com.yoxaron.webapp.exception.ExistStorageException;
 import com.yoxaron.webapp.exception.NotExistStorageException;
 import com.yoxaron.webapp.model.Resume;
+import com.yoxaron.webapp.util.Config;
+import com.yoxaron.webapp.util.ResumeTestData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

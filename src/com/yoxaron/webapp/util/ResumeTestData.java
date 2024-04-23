@@ -1,7 +1,6 @@
-package com.yoxaron.webapp;
+package com.yoxaron.webapp.util;
 
 import com.yoxaron.webapp.model.*;
-import com.yoxaron.webapp.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
