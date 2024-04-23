@@ -12,20 +12,19 @@ public class Config {
     public static final Config INSTANCE = new Config();
 
     private final Properties props = new Properties();
-    private final File storageDir;
-    private final String url;
-    private final String user;
-    private final String password;
 
-//    private final Storage storage;
+    private final File storageDir;
+    private final String dbUrl;
+    private final String dbUser;
+    private final String dbPassword;
 
     private Config() {
         try (InputStream is = new FileInputStream(PROPERTIES_FILE)) {
             props.load(is);
             storageDir = new File(props.getProperty("storage.dir"));
-            url = props.getProperty("db.url");
-            user = props.getProperty("db.user");
-            password = props.getProperty("db.password");
+            dbUrl = props.getProperty("db.url");
+            dbUser = props.getProperty("db.user");
+            dbPassword = props.getProperty("db.password");
         } catch (IOException e) {
             throw new IllegalStateException("Unable to load config file " + PROPERTIES_FILE.getAbsolutePath());
         }
@@ -35,16 +34,16 @@ public class Config {
         return INSTANCE;
     }
 
-    public String getUrl() {
-        return url;
+    public String getDbUrl() {
+        return dbUrl;
     }
 
-    public String getUser() {
-        return user;
+    public String getDbUser() {
+        return dbUser;
     }
 
-    public String getPassword() {
-        return password;
+    public String getDbPassword() {
+        return dbPassword;
     }
 
     public File getStorageDir() {
