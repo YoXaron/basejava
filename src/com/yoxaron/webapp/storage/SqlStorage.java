@@ -6,7 +6,6 @@ import com.yoxaron.webapp.sql.SqlHelper;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class SqlStorage implements Storage {
@@ -19,16 +18,17 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        List<Resume> resumes = new ArrayList<>();
-        sqlHelper.executeQuery("SELECT * FROM resume", preparedStatement -> {
+        return sqlHelper.executeQuery("SELECT * FROM resume ORDER BY full_name", preparedStatement -> {
+            List<Resume> resumes = new ArrayList<>();
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                resumes.add(new Resume(resultSet.getString("uuid"), resultSet.getString("full_name")));
+                resumes.add(new Resume(
+                        resultSet.getString("uuid"),
+                        resultSet.getString("full_name")
+                ));
             }
-            return null;
+            return resumes;
         });
-        resumes.sort(Comparator.comparing(Resume::getFullName));
-        return resumes;
     }
 
     @Override
