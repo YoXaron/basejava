@@ -13,8 +13,8 @@ public class SqlStorage implements Storage {
 
     private final SqlHelper sqlHelper;
 
-    public SqlStorage() {
-        this.sqlHelper = new SqlHelper();
+    public SqlStorage(SqlHelper sqlHelper) {
+        this.sqlHelper = sqlHelper;
     }
 
     @Override

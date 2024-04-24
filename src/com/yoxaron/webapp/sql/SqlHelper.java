@@ -2,7 +2,6 @@ package com.yoxaron.webapp.sql;
 
 import com.yoxaron.webapp.exception.ExistStorageException;
 import com.yoxaron.webapp.exception.StorageException;
-import com.yoxaron.webapp.util.Config;
 import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
@@ -14,9 +13,8 @@ public class SqlHelper {
 
     private final ConnectionFactory connectionFactory;
 
-    public SqlHelper() {
-        Config config = Config.getInstance();
-        connectionFactory = () -> DriverManager.getConnection(config.getDbUrl(), config.getDbUser(), config.getDbPassword());
+    public SqlHelper(String url, String user, String password) {
+        connectionFactory = () -> DriverManager.getConnection(url, user, password);
     }
 
     public <T> T executeQuery(String query, QueryExecutor<T> queryExecutor) {
