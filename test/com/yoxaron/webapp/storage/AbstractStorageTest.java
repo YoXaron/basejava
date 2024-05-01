@@ -2,6 +2,7 @@ package com.yoxaron.webapp.storage;
 
 import com.yoxaron.webapp.exception.ExistStorageException;
 import com.yoxaron.webapp.exception.NotExistStorageException;
+import com.yoxaron.webapp.model.ContactType;
 import com.yoxaron.webapp.model.Resume;
 import com.yoxaron.webapp.util.Config;
 import com.yoxaron.webapp.util.ResumeTestData;
@@ -77,6 +78,9 @@ public abstract class AbstractStorageTest {
     @Test
     public void update() {
         Resume r = ResumeTestData.createFilledResume(UUID_1, "New Name");
+        r.addContact(ContactType.PHONE_NUMBER, "88005553535");
+        r.addContact(ContactType.EMAIL, "email@yoxaron.com");
+        r.addContact(ContactType.SKYPE, "skype123");
         storage.update(r);
         Assertions.assertEquals(r, storage.get(UUID_1));
     }

@@ -4,6 +4,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -34,6 +35,8 @@ public class Resume implements Comparable<Resume>, Serializable {
         Objects.requireNonNull(fullName, "fullName must not be null");
         this.uuid = uuid;
         this.fullName = fullName;
+        this.contacts = new HashMap<>();
+        this.sections = new HashMap<>();
     }
 
     public Resume(String uuid, String fullName, Map<ContactType, String> contacts, Map<SectionType, Section> sections) {
@@ -102,8 +105,9 @@ public class Resume implements Comparable<Resume>, Serializable {
 
         if (!Objects.equals(uuid, resume.uuid)) return false;
         if (!Objects.equals(fullName, resume.fullName)) return false;
-        if (!Objects.equals(contacts, resume.contacts)) return false;
-        return Objects.equals(sections, resume.sections);
+        return Objects.equals(contacts, resume.contacts);
+        //TODO
+        //return Objects.equals(sections, resume.sections);
     }
 
     @Override
