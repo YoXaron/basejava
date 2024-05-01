@@ -1,8 +1,7 @@
 package com.yoxaron.webapp.sql;
 
-import com.yoxaron.webapp.exception.ExistStorageException;
+import com.yoxaron.webapp.exception.SqlExceptionConverter;
 import com.yoxaron.webapp.exception.StorageException;
-import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,11 +20,21 @@ public class SqlHelper {
         try (Connection connection = connectionFactory.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             return queryExecutor.execute(statement);
-        } catch (PSQLException e) {
-            if ("23505".equals(e.getSQLState())) {
-                throw new ExistStorageException("Resume already exists");
-            } else {
-                throw new StorageException("Error while saving resume", e);
+        } catch (SQLException e) {
+            throw SqlExceptionConverter.convertException(e);
+        }
+    }
+
+    public <T> T executeTransactionalQuery(SqlTransaction<T> executor) {
+        try(Connection connection = connectionFactory.getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+                T res = executor.execute(connection);
+                connection.commit();
+                return res;
+            } catch (SQLException e) {
+                connection.rollback();
+                throw SqlExceptionConverter.convertException(e);
             }
         } catch (SQLException e) {
             throw new StorageException(e);
