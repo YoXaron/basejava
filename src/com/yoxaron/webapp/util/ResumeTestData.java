@@ -15,11 +15,11 @@ public class ResumeTestData {
     }
 
     public static Resume createFilledResume(String uuid, String fullName) {
-//        Map<ContactType, String> contacts = getContacts();
-//        Map<SectionType, Section> sections = getSections();
-//        return new Resume(uuid, fullName, contacts, sections);
+        Map<ContactType, String> contacts = getContacts();
+        Map<SectionType, Section> sections = getSections();
+        return new Resume(uuid, fullName, contacts, sections);
 
-        return new Resume(uuid, fullName);
+//        return new Resume(uuid, fullName);
     }
 
     public static void printResume(Resume resume) {
