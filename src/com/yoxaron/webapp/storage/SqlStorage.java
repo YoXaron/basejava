@@ -94,7 +94,7 @@ public class SqlStorage implements Storage {
                     throw new NotExistStorageException(r.getUuid());
                 }
 
-//                ps.execute();
+                ps.execute();
             }
             deleteContact(conn, r);
             insertContacts(conn, r);
