@@ -107,7 +107,7 @@ public class Resume implements Comparable<Resume>, Serializable {
         if (!Objects.equals(fullName, resume.fullName)) return false;
         return Objects.equals(contacts, resume.contacts);
         //TODO
-        //return Objects.equals(sections, resume.sections);
+//        return Objects.equals(sections, resume.sections);
     }
 
     @Override
