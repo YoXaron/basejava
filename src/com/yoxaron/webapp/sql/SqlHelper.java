@@ -13,6 +13,11 @@ public class SqlHelper {
     private final ConnectionFactory connectionFactory;
 
     public SqlHelper(String url, String user, String password) {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         connectionFactory = () -> DriverManager.getConnection(url, user, password);
     }
 
@@ -26,7 +31,7 @@ public class SqlHelper {
     }
 
     public <T> T executeTransactionalQuery(SqlTransaction<T> executor) {
-        try(Connection connection = connectionFactory.getConnection()) {
+        try (Connection connection = connectionFactory.getConnection()) {
             try {
                 connection.setAutoCommit(false);
                 T res = executor.execute(connection);

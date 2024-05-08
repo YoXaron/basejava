@@ -55,25 +55,38 @@ public class SqlStorage implements Storage {
 
     @Override
     public Resume get(String uuid) {
-        return sqlHelper.executeQuery("SELECT * FROM resume r " +
-                        " LEFT JOIN contact c" +
-                        " ON r.uuid = c.resume_uuid" +
-                        " WHERE r.uuid = ?",
-                ps -> {
-                    ps.setString(1, uuid);
-                    ResultSet resultSet = ps.executeQuery();
-                    if (!resultSet.next()) {
-                        throw new NotExistStorageException(uuid);
-                    }
-                    Resume r = new Resume(uuid, resultSet.getString("full_name"));
+        return sqlHelper.executeTransactionalQuery(conn -> {
+            Resume resume;
 
-                    do {
-                        addContact(resultSet, r);
-                    } while (resultSet.next());
-
-                    return r;
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM resume WHERE uuid=?")) {
+                ps.setString(1, uuid);
+                ResultSet resultSet = ps.executeQuery();
+                if (resultSet.next()) {
+                    String fullName = resultSet.getString("full_name");
+                    resume = new Resume(uuid, fullName);
+                } else {
+                    throw new NotExistStorageException(uuid);
                 }
-        );
+            }
+
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM contact WHERE resume_uuid=?")) {
+                ps.setString(1, uuid);
+                ResultSet resultSet = ps.executeQuery();
+                while (resultSet.next()) {
+                    addContact(resultSet, resume);
+                }
+            }
+
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM section WHERE resume_uuid=?")) {
+                ps.setString(1, uuid);
+                ResultSet resultSet = ps.executeQuery();
+                while (resultSet.next()) {
+                    addSection(resultSet, resume);
+                }
+            }
+
+            return resume;
+        });
     }
 
     @Override
@@ -104,8 +117,10 @@ public class SqlStorage implements Storage {
 
                 ps.execute();
             }
-            deleteContact(conn, r);
+            deleteContacts(conn, r);
+            deleteSections(conn, r);
             insertContacts(conn, r);
+            insertSections(conn, r);
             return null;
         });
     }
@@ -164,7 +179,7 @@ public class SqlStorage implements Storage {
         }
     }
 
-    private void deleteContact(Connection conn, Resume r) throws SQLException {
+    private void deleteContacts(Connection conn, Resume r) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement("DELETE FROM contact WHERE resume_uuid = ?")) {
             ps.setString(1, r.getUuid());
             ps.execute();
@@ -199,20 +214,23 @@ public class SqlStorage implements Storage {
         }
     }
 
+    private void deleteSections(Connection conn, Resume r) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("DELETE FROM section WHERE resume_uuid = ?")) {
+            ps.setString(1, r.getUuid());
+            ps.execute();
+        }
+    }
+
     private String getSectionAsString(Map.Entry<SectionType, Section> entry) {
         SectionType type = entry.getKey();
         switch (type) {
             case PERSONAL, OBJECTIVE -> {
-                TextSection section =  (TextSection) entry.getValue();
+                TextSection section = (TextSection) entry.getValue();
                 return section.getText();
             }
-            case ACHIEVEMENTS, QUALIFICATIONS ->  {
+            case ACHIEVEMENTS, QUALIFICATIONS -> {
                 ListSection section = (ListSection) entry.getValue();
-                StringBuilder builder = new StringBuilder();
-                for (String string : section.getList()) {
-                    builder.append(string).append("\n");
-                }
-                return builder.toString();
+                return String.join("\n", section.getList());
             }
             case EXPERIENCE, EDUCATION -> {
                 return "Organization section";

@@ -1,7 +1,9 @@
 package com.yoxaron.webapp.web;
 
 import com.yoxaron.webapp.model.Resume;
-import com.yoxaron.webapp.util.ResumeTestData;
+import com.yoxaron.webapp.storage.Storage;
+import com.yoxaron.webapp.util.Config;
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,18 +11,14 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public class ResumeServlet extends HttpServlet {
 
-    private final List<Resume> resumes = new ArrayList<>();
+    private Storage storage;
 
-    public ResumeServlet() {
-        for (int i = 0; i < 10; i++) {
-            resumes.add(ResumeTestData.createFilledResume(UUID.randomUUID().toString(), "Name" + i));
-        }
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        storage = Config.getInstance().getStorage();
     }
 
     @Override
@@ -44,7 +42,7 @@ public class ResumeServlet extends HttpServlet {
         out.write("<th>UUID</th>");
         out.write("<th>Full name</th>");
         out.write("</tr>");
-        for (Resume r : resumes) {
+        for (Resume r : storage.getAllSorted()) {
             out.write("<tr>");
             out.write("<td>" + r.getUuid() + "</td>");
             out.write("<td>" + r.getFullName() + "</td>");
