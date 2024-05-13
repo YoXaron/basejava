@@ -16,16 +16,16 @@ import java.util.UUID;
 
 public abstract class AbstractStorageTest {
 
-    private static final String UUID_1 = UUID.randomUUID().toString();
-    private static final String UUID_2 = UUID.randomUUID().toString();
-    private static final String UUID_3 = UUID.randomUUID().toString();
-    private static final String UUID_4 = UUID.randomUUID().toString();
-    private static final String UUID_NOT_EXIST = "dummy";
+    public static final String UUID_1 = UUID.randomUUID().toString();
+    public static final String UUID_2 = UUID.randomUUID().toString();
+    public static final String UUID_3 = UUID.randomUUID().toString();
+    public static final String UUID_4 = UUID.randomUUID().toString();
+    public static final String UUID_NOT_EXIST = "dummy";
 
-    private static final Resume RESUME_1 = ResumeTestData.createFilledResume(UUID_1, "FullName1");
-    private static final Resume RESUME_2 = ResumeTestData.createFilledResume(UUID_2, "FullName2");
-    private static final Resume RESUME_3 = ResumeTestData.createFilledResume(UUID_3, "FullName3");
-    private static final Resume RESUME_4 = ResumeTestData.createFilledResume(UUID_4, "FullName4");
+    public static final Resume RESUME_1 = ResumeTestData.createFilledResume(UUID_1, "FullName1");
+    public static final Resume RESUME_2 = ResumeTestData.createFilledResume(UUID_2, "FullName2");
+    public static final Resume RESUME_3 = ResumeTestData.createFilledResume(UUID_3, "FullName3");
+    public static final Resume RESUME_4 = ResumeTestData.createFilledResume(UUID_4, "FullName4");
 
     protected static final File STORAGE_DIR = Config.getInstance().getStorageDir();
 

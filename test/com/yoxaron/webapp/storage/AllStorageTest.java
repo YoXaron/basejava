@@ -1,5 +1,6 @@
 package com.yoxaron.webapp.storage;
 
+import com.yoxaron.webapp.util.JsonParserTest;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
@@ -13,6 +14,7 @@ import org.junit.platform.suite.api.Suite;
         ObjectStreamFileStorageTest.class,
         ObjectStreamPathStorageTest.class,
         XmlPathStorageTest.class,
+        JsonParserTest.class,
         JsonPathStorageTest.class,
         DataPathStorageTest.class,
         SqlStorageTest.class
