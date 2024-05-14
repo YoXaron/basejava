@@ -1,5 +1,6 @@
 package com.yoxaron.webapp.web;
 
+import com.yoxaron.webapp.model.ContactType;
 import com.yoxaron.webapp.model.Resume;
 import com.yoxaron.webapp.storage.Storage;
 import com.yoxaron.webapp.util.Config;
@@ -44,8 +45,8 @@ public class ResumeServlet extends HttpServlet {
         out.write("</tr>");
         for (Resume r : storage.getAllSorted()) {
             out.write("<tr>");
-            out.write("<td>" + r.getUuid() + "</td>");
-            out.write("<td>" + r.getFullName() + "</td>");
+            out.write("<td><a href=\"resume?uuid=" + r.getUuid() + "\">" + r.getFullName() + "</a></td>");
+            out.write("<td>" + r.getContact(ContactType.EMAIL) + "</td>");
             out.write("</tr>");
         }
         out.write("</table>");
