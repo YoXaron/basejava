@@ -10,29 +10,31 @@
 </head>
 <body>
 
-<div class="header">
-    <h1>RESUME LIST</h1>
-</div>
+<jsp:include page="fragment/header.jsp"/>
 
-<section>
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-        </tr>
-        <%
-            for (Resume resume : (List<Resume>) request.getAttribute("resumes")) {
-        %>
-        <tr>
-            <td><a href="resume?uuid=<%=resume.getUuid()%>"/><%=resume.getFullName()%>
-            </td>
-            <td><%=resume.getContact(ContactType.EMAIL)%>
-            </td>
-        </tr>
-        <%
-            }
-        %>
-    </table>
-</section>
+<div class="content">
+    <section>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+            </tr>
+            <%
+                for (Resume resume : (List<Resume>) request.getAttribute("resumes")) {
+            %>
+            <tr>
+                <td><a href="resume?uuid=<%=resume.getUuid()%>"/><%=resume.getFullName()%>
+                </td>
+                <td><%=resume.getContact(ContactType.EMAIL)%>
+                </td>
+            </tr>
+            <%
+                }
+            %>
+        </table>
+    </section>
+</div>
+<jsp:include page="fragment/footer.jsp"/>
+
 </body>
 </html>
