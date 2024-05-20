@@ -11,6 +11,11 @@
 <body>
 <jsp:include page="fragment/header.jsp"/>
 <section class="content">
+    <hr>
+    <a href="resume?null&action=new">
+        <button>Добавить резюме</button>
+    </a>
+    <hr>
     <table>
         <tr>
             <th>Name</th>
@@ -24,8 +29,8 @@
             <tr>
                 <td><a href="resume?uuid=${resume.uuid}&action=view">${resume.fullName}</a></td>
                 <td><%=ContactType.EMAIL.toHtml(resume.getContact(ContactType.EMAIL))%></td>
-                <td><a href="resume?uuid=${resume.uuid}&action=delete">Delete</a></td>
-                <td><a href="resume?uuid=${resume.uuid}&action=edit">Edit</a></td>
+                <td><a href="resume?uuid=${resume.uuid}&action=edit"><img src="img/edit.png" style="width: 20px; height: 20px;""></a></td>
+                <td><a href="resume?uuid=${resume.uuid}&action=delete"><img src="img/delete.png" style="width: 20px; height: 20px;"></a></td>
             </tr>
         </c:forEach>
     </table>
