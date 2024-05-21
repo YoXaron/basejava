@@ -19,16 +19,17 @@ public class DateUtil {
         return LocalDate.of(year, month, 1);
     }
 
+    public static String getStringFromDate(LocalDate date) {
+        return date.format(DATE_TIME_FORMATTER);
+    }
+
     public static String getStringFromPeriod(Period period) {
-        StringBuilder sb = new StringBuilder();
         LocalDate begin = period.getBegin();
         LocalDate end = period.getEnd();
 
-        sb.append(begin.format(DATE_TIME_FORMATTER));
-        sb.append(" - ");
-        sb.append(end.equals(NOW) ? "Настоящее время": end.format(DATE_TIME_FORMATTER));
+        String endString = end.equals(NOW) ? "Настоящее время" : end.format(DATE_TIME_FORMATTER);
 
-        return sb.toString();
+        return String.format("%s - %s", begin.format(DATE_TIME_FORMATTER), endString);
     }
     
     private DateUtil() {}
