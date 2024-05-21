@@ -40,10 +40,10 @@
             <h3>${sectionType.title}</h3>
             <c:choose>
                 <c:when test="${sectionType == 'OBJECTIVE'}">
-                    <input type="text" name="${sectionType}" size=75 value=<%=section%>>
+                    <input type="text" name="${sectionType}" size=75 value="<%=section%>">
                 </c:when>
                 <c:when test="${sectionType == 'PERSONAL'}">
-                    <textarea name="${sectionType}" cols=75 rows=5><%=section%>></textarea>
+                    <textarea name="${sectionType}" cols=75 rows=5><%=section%></textarea>
                 </c:when>
                 <c:when test="${sectionType == 'QUALIFICATIONS' || sectionType == 'ACHIEVEMENTS'}">
                     <textarea name="${sectionType}" cols=75 rows=5>
@@ -58,7 +58,7 @@
                             <dd><input type="text" name="${sectionType}" size=100 value="${org.name}"></dd>
                             <br>
                             <dt>Сайт учреждения:</dt>
-                            <dd><input type="text" name="${sectionType}" size=100 value="${org.link}"></dd>
+                            <dd><input type="text" name="${sectionType}link" size=100 value="${org.link}"></dd>
                         </dl>
                         <div style="margin-left: 30px">
                             <c:forEach var="period" items="${org.periods}">
@@ -82,14 +82,14 @@
                                 <dl>
                                     <dt>Должность:</dt>
                                     <dd>
-                                        <input type="text" name="${type}${counter.index}title" size=75
+                                        <input type="text" name="${sectionType}${counter.index}title" size=75
                                                value="${period.title}">
                                     </dd>
                                 </dl>
                                 <dl>
                                     <dt>Описание:</dt>
                                     <dd>
-                                        <textarea type="text" name="${type}${counter.index}description" cols=75
+                                        <textarea type="text" name="${sectionType}${counter.index}description" cols=75
                                                   rows=2>${period.description}</textarea>
                                     </dd>
                                 </dl>

@@ -88,11 +88,11 @@ public class Resume implements Comparable<Resume>, Serializable {
         return sections;
     }
 
-    public void addContact(ContactType type, String str) {
+    public void setContact(ContactType type, String str) {
         contacts.put(type, str);
     }
 
-    public void addSection(SectionType type, Section section) {
+    public void setSection(SectionType type, Section section) {
         sections.put(type, section);
     }
 

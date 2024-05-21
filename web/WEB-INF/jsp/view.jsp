@@ -46,7 +46,7 @@
                 <td><h3><a name="type.name">${sectionType.title}</a></h3></td>
                 <c:if test="${sectionType.name() == 'OBJECTIVE'}">
                     <td>
-                        <h3><%=((TextSection) section).getText()%>></h3>
+                        <h3><%=((TextSection) section).getText()%></h3>
                     </td>
                 </c:if>
             </tr>
@@ -55,7 +55,7 @@
                 <c:choose>
                     <c:when test="${sectionType.name() == 'PERSONAL'}">
                         <tr>
-                            <td><%=((TextSection) section).getText()%>></td>
+                            <td><%=((TextSection) section).getText()%></td>
                         </tr>
                     </c:when>
 

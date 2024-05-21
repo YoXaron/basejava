@@ -170,7 +170,7 @@ public class SqlStorage implements Storage {
         ContactType type = ContactType.valueOf(resultSet.getString("type"));
         String value = resultSet.getString("value");
         if (value != null) {
-            resume.addContact(type, value);
+            resume.setContact(type, value);
         }
     }
 
@@ -178,7 +178,7 @@ public class SqlStorage implements Storage {
         String value = resultSet.getString("value");
         if (value != null) {
             SectionType type = SectionType.valueOf(resultSet.getString("type"));
-            resume.addSection(type, JsonParser.read(value, Section.class));
+            resume.setSection(type, JsonParser.read(value, Section.class));
         }
     }
 

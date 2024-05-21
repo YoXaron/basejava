@@ -11,6 +11,8 @@ public class Organization implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final Organization EMPTY = new Organization("", "", List.of(Period.EMPTY));
+
     private String name;
     private String link;
     private List<Period> periods;
