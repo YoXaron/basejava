@@ -104,7 +104,7 @@
         </c:forEach>
     </table>
     <br>
-    <button onclick=window.history.back()>Back</button>
+    <button onclick=window.history.back()>Назад</button>
 </section>
 <jsp:include page="fragment/footer.jsp"/>
 </body>

@@ -4,10 +4,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Initial resume class
@@ -18,10 +15,28 @@ public class Resume implements Comparable<Resume>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final Resume EMPTY = new Resume();
+
+    static {
+        try {
+
+
+            EMPTY.setSection(SectionType.OBJECTIVE, TextSection.EMPTY);
+            EMPTY.setSection(SectionType.PERSONAL, TextSection.EMPTY);
+            EMPTY.setSection(SectionType.ACHIEVEMENTS, ListSection.EMPTY);
+            EMPTY.setSection(SectionType.QUALIFICATIONS, ListSection.EMPTY);
+            EMPTY.setSection(SectionType.EXPERIENCE, new OrganizationSection(List.of(Organization.EMPTY)));
+            EMPTY.setSection(SectionType.EDUCATION, new OrganizationSection(List.of(Organization.EMPTY)));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
     private String uuid;
     private String fullName;
-    private Map<ContactType, String> contacts;
-    private Map<SectionType, Section> sections;
+    private Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
+    private Map<SectionType, Section> sections = new EnumMap<>(SectionType.class);
 
     public Resume() {
     }
@@ -35,8 +50,6 @@ public class Resume implements Comparable<Resume>, Serializable {
         Objects.requireNonNull(fullName, "fullName must not be null");
         this.uuid = uuid;
         this.fullName = fullName;
-        this.contacts = new EnumMap<>(ContactType.class);
-        this.sections = new EnumMap<>(SectionType.class);
     }
 
     public Resume(String uuid, String fullName, Map<ContactType, String> contacts, Map<SectionType, Section> sections) {

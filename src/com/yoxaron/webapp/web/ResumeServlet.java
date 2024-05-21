@@ -37,6 +37,9 @@ public class ResumeServlet extends HttpServlet {
 
         Resume r;
         switch (action) {
+            case "add":
+                r = Resume.EMPTY;
+                break;
             case "delete":
                 storage.delete(uuid);
                 response.sendRedirect("resume");
@@ -46,19 +49,35 @@ public class ResumeServlet extends HttpServlet {
                 break;
             case "edit":
                 r = storage.get(uuid);
-                for (SectionType type : new SectionType[]{SectionType.EXPERIENCE, SectionType.EDUCATION}) {
-                    OrganizationSection section = (OrganizationSection) r.getSection(type);
-                    List<Organization> emptyFirstOrganizations = new ArrayList<>();
-                    emptyFirstOrganizations.add(Organization.EMPTY);
-                    if (section != null) {
-                        for (Organization org : section.getOrganizations()) {
-                            List<Period> emptyFirstPeriods = new ArrayList<>();
-                            emptyFirstPeriods.add(Period.EMPTY);
-                            emptyFirstPeriods.addAll(org.getPeriods());
-                            emptyFirstOrganizations.add(new Organization(org.getName(), org.getLink(), emptyFirstPeriods));
+                for (SectionType type : SectionType.values()) {
+                    Section section = r.getSection(type);
+                    switch (type) {
+                        case OBJECTIVE, PERSONAL -> {
+                            if (section == null) {
+                                section = TextSection.EMPTY;
+                            }
+                        }
+                        case ACHIEVEMENTS, QUALIFICATIONS -> {
+                            if (section == null) {
+                                section = ListSection.EMPTY;
+                            }
+                        }
+                        case EXPERIENCE, EDUCATION -> {
+                            OrganizationSection organizationSection = (OrganizationSection) r.getSection(type);
+                            List<Organization> emptyFirstOrganizations = new ArrayList<>();
+                            emptyFirstOrganizations.add(Organization.EMPTY);
+                            if (organizationSection != null) {
+                                for (Organization org : organizationSection.getOrganizations()) {
+                                    List<Period> emptyFirstPeriods = new ArrayList<>();
+                                    emptyFirstPeriods.add(Period.EMPTY);
+                                    emptyFirstPeriods.addAll(org.getPeriods());
+                                    emptyFirstOrganizations.add(new Organization(org.getName(), org.getLink(), emptyFirstPeriods));
+                                }
+                            }
+                            section = new OrganizationSection(emptyFirstOrganizations);
                         }
                     }
-                    r.setSection(type, new OrganizationSection(emptyFirstOrganizations));
+                    r.setSection(type, section);
                 }
                 break;
             default:
@@ -74,8 +93,15 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        Resume r = storage.get(uuid);
-        r.setFullName(fullName);
+
+        final boolean isNotCreated = (uuid == null || uuid.isEmpty());
+        Resume r;
+        if (isNotCreated) {
+            r = new Resume(fullName);
+        } else {
+            r = storage.get(uuid);
+            r.setFullName(fullName);
+        }
 
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
@@ -99,27 +125,7 @@ public class ResumeServlet extends HttpServlet {
                     case EXPERIENCE, EDUCATION -> {
                         List<Organization> orgs = new ArrayList<>();
                         String[] links = request.getParameterValues(type.name() + "link");
-//                        for (int i = 0; i < values.length; i++) {
-//                            List<Period> periods = new ArrayList<>();
-//                            String name = values[i];
-//                            if (name != null && !name.trim().isEmpty()) {
-//                                String prefix = type.name() + i;
-//                                String[] startDates = request.getParameterValues(prefix + "startDate");
-//                                String[] endDates = request.getParameterValues(prefix + "endDate");
-//                                String[] titles = request.getParameterValues(prefix + "title");
-//                                String[] descriptions = request.getParameterValues(prefix + "description");
-////                                if (titles != null) {
-//                                    for (int j = 0; j < titles.length; j++) {
-//                                        if (titles[j] != null || !Objects.requireNonNull(titles[j]).trim().isEmpty()) {
-//                                            periods.add(new Period(DateUtil.parse(startDates[j]),
-//                                                    DateUtil.parse(endDates[j]), titles[j], descriptions[j]));
-//                                        }
-//                                    }
-////                                }
-//                                orgs.add(new Organization(name, links[i], periods));
-//                            }
-//                            r.setSection(type, new OrganizationSection(orgs));
-//                        }
+
                         for (int i = 0; i < values.length; i++) {
                             List<Period> periods = new ArrayList<>();
                             String name = values[i];
@@ -130,7 +136,6 @@ public class ResumeServlet extends HttpServlet {
                                 String[] titles = request.getParameterValues(prefix + "title");
                                 String[] descriptions = request.getParameterValues(prefix + "description");
 
-                                // Check if all arrays are not null and have the same length
                                 if (startDates != null && endDates != null && titles != null && descriptions != null &&
                                         startDates.length == endDates.length && endDates.length == titles.length && titles.length == descriptions.length) {
 
@@ -140,7 +145,6 @@ public class ResumeServlet extends HttpServlet {
                                         String title = titles[j];
                                         String description = descriptions[j];
 
-                                        // Check if startDate, endDate, title, and description are not empty
                                         if ((startDate != null && !startDate.trim().isEmpty()) ||
                                                 (endDate != null && !endDate.trim().isEmpty()) ||
                                                 (title != null && !title.trim().isEmpty()) ||
@@ -158,8 +162,11 @@ public class ResumeServlet extends HttpServlet {
                 }
             }
         }
-
-        storage.update(r);
+        if (isNotCreated) {
+            storage.save(r);
+        } else {
+            storage.update(r);
+        }
         response.sendRedirect("resume");
     }
 }

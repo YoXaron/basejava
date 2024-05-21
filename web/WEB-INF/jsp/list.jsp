@@ -12,7 +12,7 @@
 <jsp:include page="fragment/header.jsp"/>
 <section class="content">
     <hr>
-    <a href="resume?null&action=new">
+    <a href="resume?null&action=add">
         <button>Добавить резюме</button>
     </a>
     <hr>
