@@ -22,7 +22,11 @@
         <input type="hidden" name="uuid" value="${resume.uuid}">
         <dl>
             <dt>Имя:</dt>
-            <dd><input type="text" name="fullName" size=50 value="${resume.fullName}"></dd>
+            <dd><input type="text" name="fullName" size=50 value="${resume.fullName}" placeholder="ФИО"
+                       required
+                       pattern="^[^\s\d]+( [^\s\d]+)*$"
+                       oninvalid="this.setCustomValidity('Пожалуйста, введите корректное имя')"
+                       oninput="this.setCustomValidity('')"></dd>
         </dl>
         <hr>
         <h3>Контакты:</h3>
@@ -46,9 +50,7 @@
                     <textarea name="${sectionType}" cols=75 rows=5><%=section%></textarea>
                 </c:when>
                 <c:when test="${sectionType == 'QUALIFICATIONS' || sectionType == 'ACHIEVEMENTS'}">
-                    <textarea name="${sectionType}" cols=75 rows=5>
-                        <%=String.join("\n", ((ListSection) section).getList())%>
-                    </textarea>
+                    <textarea name="${sectionType}" cols=75 rows=5><%=String.join("\n", ((ListSection) section).getList())%></textarea>
                 </c:when>
                 <c:when test="${sectionType == 'EXPERIENCE' || sectionType == 'EDUCATION'}">
                     <c:forEach var="org" items="<%=((OrganizationSection) section).getOrganizations()%>"
@@ -102,7 +104,7 @@
         </c:forEach>
 
         <button type="submit">Сохранить</button>
-        <button onclick="window.history.back()">Отменить</button>
+        <button type="button" onclick="window.history.back()">Отменить</button>
     </form>
 
 </section>

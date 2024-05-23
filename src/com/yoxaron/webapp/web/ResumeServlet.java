@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ResumeServlet extends HttpServlet {
 
@@ -120,8 +121,12 @@ public class ResumeServlet extends HttpServlet {
             } else {
                 switch (type) {
                     case OBJECTIVE, PERSONAL -> r.setSection(type, new TextSection(value));
-                    case QUALIFICATIONS, ACHIEVEMENTS ->
-                            r.setSection(type, new ListSection(Arrays.asList(value.split("\n"))));
+                    case QUALIFICATIONS, ACHIEVEMENTS -> {
+                        List<String> lines = Arrays.stream(value.split("\n"))
+                                .filter(l -> !(l.trim().isBlank()))
+                                .collect(Collectors.toList());
+                        r.setSection(type, new ListSection(lines));
+                    }
                     case EXPERIENCE, EDUCATION -> {
                         List<Organization> orgs = new ArrayList<>();
                         String[] links = request.getParameterValues(type.name() + "link");
