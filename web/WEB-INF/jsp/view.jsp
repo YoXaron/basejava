@@ -47,7 +47,7 @@
                     <div class="qualities"><%=((TextSection) section).getText()%>
                     </div>
                 </c:when>
-                <c:when test="${sectionType.name() =='QUALIFICATIONS' || sectionType.name() =='ACHIEVEMENT'}">
+                <c:when test="${sectionType.name() =='QUALIFICATIONS' || sectionType.name() =='ACHIEVEMENTS'}">
                     <ul class="list">
                         <c:forEach var="item" items="<%=((ListSection) section).getList()%>">
                             <li>${item}</li>
