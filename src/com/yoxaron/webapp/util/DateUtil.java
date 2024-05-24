@@ -21,7 +21,7 @@ public class DateUtil {
     }
 
     public static LocalDate parse(String date) {
-        if (date == null || date.trim().isEmpty() || "Настоящее время".equals(date)) {
+        if (date == null || date.trim().isEmpty() || "Сейчас".equals(date)) {
             return NOW;
         }
         YearMonth yearMonth = YearMonth.parse(date, DATE_TIME_FORMATTER);
@@ -32,14 +32,14 @@ public class DateUtil {
         if (date == null) {
             return "";
         }
-        return date.equals(NOW) ? "Настоящее время" : date.format(DATE_TIME_FORMATTER);
+        return date.equals(NOW) ? "Сейчас" : date.format(DATE_TIME_FORMATTER);
     }
 
     public static String getStringFromPeriod(Period period) {
         LocalDate begin = period.getBegin();
         LocalDate end = period.getEnd();
 
-        String endString = end.equals(NOW) ? "Настоящее время" : end.format(DATE_TIME_FORMATTER);
+        String endString = end.equals(NOW) ? "Сейчас" : end.format(DATE_TIME_FORMATTER);
 
         return String.format("%s - %s", begin.format(DATE_TIME_FORMATTER), endString);
     }

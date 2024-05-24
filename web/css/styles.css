@@ -1,0 +1,127 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #FFFFFF;
+}
+
+.header {
+    height: 60px;
+    width: 100%;
+    background: #EDEFF2;
+    display: flex;
+    justify-content: center; /* Выравниваем контент по центру по горизонтали */
+    align-items: center;
+}
+
+.header .arrow:hover {
+    color: transparent;
+    text-decoration: none;
+}
+
+.header .resumes-control-title {
+    margin-left: 16px;
+    font-family: Open Sans, serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    color: #4A586E;
+}
+
+.footer {
+    height: 60px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    font-family: Open Sans, serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 19px;
+    display: table;
+    color: #4A586E;
+    background: #EDEFF2;
+}
+
+.footer a {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.footer div {
+    width: 100%;
+    text-align: center;
+}
+
+.scrollable-panel {
+    height: calc(100vh - 120px);
+    width: 100%;
+    margin: 0;
+    overflow: auto;
+}
+
+.text-anchor {
+    text-decoration: none;
+}
+
+.text-anchor:hover {
+    opacity: 0.8;
+    color: #4A586E;
+    text-decoration: underline;
+}
+
+.no-underline-anchor {
+    text-decoration: none;
+}
+
+.no-underline-anchor:hover {
+    opacity: 0.8;
+}
+
+.footer-text-anchor {
+    color: #4A586E;
+    text-decoration: none;
+}
+
+.footer-text-anchor:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+.themes {
+    font-family: Roboto, serif;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 19px;
+    float: right;
+    display: flex;
+    margin: 40px 24px 0 0;
+    color: #4A586E;
+}
+
+.theme-title {
+    width: 45px;
+}
+
+.theme-selector option {
+    color: #E0E4EA;
+    background: #4A586E;
+}
+
+.theme-selector select {
+    color: #4A586E;
+    background: #E0E4EA;
+    border: none;
+}
+
+.contact-link {
+    color: #169FE1;
+    text-decoration: none;
+}
+
+.contact-link:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+

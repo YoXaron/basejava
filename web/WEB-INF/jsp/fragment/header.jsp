@@ -1,8 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<header>
-    <nav class="navbar">
-        <ul>
-            <li><a href="resume">Управление резюме</a></li>
-        </ul>
-    </nav>
-</header>
+<div class="header">
+    <a class="text-anchor" href="resume">
+        <span class="resumes-control-title">Управление резюме</span>
+    </a>
+</div>
